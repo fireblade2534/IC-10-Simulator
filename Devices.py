@@ -42,4 +42,6 @@ class StructureCircuitHousing(Device):
         self.Slots=Slots
         self.Pins=Pins
 
+        
+
         super().__init__(self.__class__.__name__,Name, ReferenceId)
