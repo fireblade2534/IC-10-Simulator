@@ -8,8 +8,19 @@ class Device:
         self.Name=Name
         self.ReferenceId=Utility.Field(StartValue=ReferenceId,Read=True,Write=False)
 
+class Pins:
+        def __init__(self,db,d0,d1,d2,d3,d4,d5):
+            self.db=db
+            self.d0=d0
+            self.d1=d1
+            self.d2=d2
+            self.d3=d3
+            self.d4=d4
+            self.d5=d5
+
 class StructureCircuitHousing(Device):
-    def __init__(self, Name: str=None, ReferenceId: int = None,On:int=0,Power: int=1,RequiredPower:int=0,Setting:int=0):
+    
+    def __init__(self, Name: str=None, ReferenceId: int = None,On:int=0,Power: int=1,RequiredPower:int=0,Setting:int=0,Pins:Pins=None):
         self.Error=Utility.Field(StartValue=0,Read=True,Write=False)
         self.LineNumber=Utility.Field(StartValue=0,Read=True,Write=True)
         self.On=Utility.Field(StartValue=On,Read=True,Write=True)
@@ -17,4 +28,6 @@ class StructureCircuitHousing(Device):
         self.RequiredPower=Utility.Field(StartValue=RequiredPower,Read=True,Write=False)
         self.Setting=Utility.Field(StartValue=Setting,Read=True,Write=True)
         
+        self.Pins=Pins
+
         super().__init__(self.__class__.__name__,Name, ReferenceId)

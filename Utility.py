@@ -10,5 +10,3 @@ class Field:
         self.Value=StartValue
         self.Read=Read
         self.Write=Write
-
-    
