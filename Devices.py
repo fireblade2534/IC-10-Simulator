@@ -10,4 +10,6 @@ class Device:
 
 class StructureCircuitHousing(Device):
     def __init__(self, Name: str=None, ID: int = None):
+        self.LineNumber=0
+        
         super().__init__(self.__class__.__name__,Name, ID)
