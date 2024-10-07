@@ -8,3 +8,7 @@ def ComputeCRC32(Input):
 class Field:
     def __init__(self,StartValue:int=0,Read:bool=False,Write:bool=False):
         self.Value=StartValue
+        self.Read=Read
+        self.Write=Write
+
+    
