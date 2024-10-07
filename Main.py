@@ -3,4 +3,8 @@ class InternalState:
         self.Registers={f"r{X}":0 for X in range(0,18)}
         self.RegisterAliases={"sp":16,"ra":17}
         self.Constants={}
+        self.Devices={}
+
+
+
 print(InternalState().Registers)
