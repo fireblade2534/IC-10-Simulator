@@ -3,14 +3,13 @@ class Device:
     def __init__(self,PrefabName:str,Name:str=None,ReferenceId:int=None):
         self.PrefabName=PrefabName
         self.PrefabHash=Utility.Field(StartValue=Utility.ComputeCRC32(PrefabName),Read=True,Write=False)
-        if Name == "" or Name=None:
+        if Name == "" or Name==None:
             Name=self.PrefabName
         self.Name=Name
         self.ReferenceId=Utility.Field(StartValue=ReferenceId,Read=True,Write=False)
 
 class Pins:
-        def __init__(self,db,d0,d1,d2,d3,d4,d5):
-            self.db=db
+        def __init__(self,d0:int=0,d1:int=0,d2:int=0,d3:int=0,d4:int=0,d5:int=0):
             self.d0=d0
             self.d1=d1
             self.d2=d2
@@ -41,7 +40,7 @@ class StructureCircuitHousing(Device):
         self.Setting=Utility.Field(StartValue=Setting,Read=True,Write=True)
         self.Slots=Slots
         self.Pins=Pins
-
+        self.Pins.db=ReferenceId
         
 
         super().__init__(self.__class__.__name__,Name, ReferenceId)
