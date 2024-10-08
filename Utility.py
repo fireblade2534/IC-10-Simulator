@@ -13,3 +13,6 @@ class Field:
     def GetConfig(self):
         return "Field",{"StartValue":self.Value,"Read":self.Read,"Write":self.Write}
     
+    @staticmethod
+    def ParseConfigFile(Data):
+        return Field(*Data["Args"])

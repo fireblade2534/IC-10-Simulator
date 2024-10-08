@@ -1,13 +1,13 @@
-import Utility
+from Utility import *
 from Error import *
 class Device:
     def __init__(self,PrefabName:str,Name:str=None,ReferenceId:int=None):
         self.PrefabName=PrefabName
-        self.PrefabHash=Utility.Field(StartValue=Utility.ComputeCRC32(PrefabName),Read=True,Write=False)
+        self.PrefabHash=Field(StartValue=ComputeCRC32(PrefabName),Read=True,Write=False)
         if Name == "" or Name==None:
             Name=self.PrefabName
         self.Name=Name
-        self.ReferenceId=Utility.Field(StartValue=ReferenceId,Read=True,Write=False)
+        self.ReferenceId=Field(StartValue=ReferenceId,Read=True,Write=False)
 
     def GetConfig(self):
         Output={}
@@ -20,7 +20,7 @@ class Device:
                     ItemName,ItemValue=B.GetConfig()
                     Output[X]["Args"].append({"Type":ItemName,"Args":ItemValue})
             elif type(Y) == int:
-                pass
+                Output[X]={"Type":"int","Args":Y}
             else:
                 try:
                     ItemName,ItemValue=Y.GetConfig()
@@ -28,6 +28,25 @@ class Device:
                 except:
                     raise BadConfigType(Y)
         return self.PrefabName,Output
+
+    @staticmethod
+    def ParseConfigFile(Data):
+        
+        FinalArgs={}
+        for X,Y in Data["Args"].items():
+            print(Y["Type"])
+            if Y["Type"] == "str":
+                FinalArgs[X]=Y["Args"]
+            elif Y["Type"] == "int":
+                FinalArgs[X]=Y["Args"]
+            elif Y["Type"] == "list":
+                FinalArgs[X]=[]
+                for A in Y["Args"]:
+                    Item=globals()[f'{A["Type"]}'].ParseConfigFile(A)
+                    FinalArgs[X].append(Item)
+            else:
+                FinalArgs[X]=globals()[f'{Y["Type"]}'].ParseConfigFile(Y)
+        globals()[f'{Data["Type"]}'](*FinalArgs)
 
 class Pins:
     def __init__(self,d0:int=0,d1:int=0,d2:int=0,d3:int=0,d4:int=0,d5:int=0):
@@ -41,17 +60,21 @@ class Pins:
     def GetConfig(self):
         return "Pins",{"d0":self.d0,"d1":self.d1,"d2":self.d2,"d3":self.d3,"d4":self.d4,"d5":self.d5}
 
+    @staticmethod
+    def ParseConfigFile(Data):
+        return Pins(*Data["Args"])
+
 class Slot:
     def __init__(self,Class:int=0,Damage:int=0,MaxQuantity:int=0,OccupantHash:int=0,Occupied:int=0,PrefabHash:int=0,Quantity:int=0,ReferenceId:int=0,SortingClass:int=0):
-        self.Class=Utility.Field(StartValue=Class,Read=True,Write=False)
-        self.Damage=Utility.Field(StartValue=Damage,Read=True,Write=False)
-        self.MaxQuantity=Utility.Field(StartValue=MaxQuantity,Read=True,Write=False)
-        self.OccupantHash=Utility.Field(StartValue=OccupantHash,Read=True,Write=False)
-        self.Occupied=Utility.Field(StartValue=Occupied,Read=True,Write=False)
-        self.PrefabHash=Utility.Field(StartValue=PrefabHash,Read=True,Write=False)
-        self.Quantity=Utility.Field(StartValue=Quantity,Read=True,Write=False)
-        self.ReferenceId=Utility.Field(StartValue=ReferenceId,Read=True,Write=False)
-        self.SortingClass=Utility.Field(StartValue=SortingClass,Read=True,Write=False)
+        self.Class=Field(StartValue=Class,Read=True,Write=False)
+        self.Damage=Field(StartValue=Damage,Read=True,Write=False)
+        self.MaxQuantity=Field(StartValue=MaxQuantity,Read=True,Write=False)
+        self.OccupantHash=Field(StartValue=OccupantHash,Read=True,Write=False)
+        self.Occupied=Field(StartValue=Occupied,Read=True,Write=False)
+        self.PrefabHash=Field(StartValue=PrefabHash,Read=True,Write=False)
+        self.Quantity=Field(StartValue=Quantity,Read=True,Write=False)
+        self.ReferenceId=Field(StartValue=ReferenceId,Read=True,Write=False)
+        self.SortingClass=Field(StartValue=SortingClass,Read=True,Write=False)
     
     def GetConfig(self):
         Output={}
@@ -63,18 +86,23 @@ class Slot:
                 raise BadConfigType(Y)
         return "Slot",Output
 
+    @staticmethod
+    def ParseConfigFile(Data):
+        return Slot(*Data["Args"])
+    
 class StructureCircuitHousing(Device):
     
     def __init__(self, Name: str=None, ReferenceId: int = None,On:int=0,Power: int=1,RequiredPower:int=0,Setting:int=0,Pins:Pins=None,Slots:list[Slot]=[Slot()]):
-        self.Error=Utility.Field(StartValue=0,Read=True,Write=False)
-        self.LineNumber=Utility.Field(StartValue=0,Read=True,Write=True)
-        self.On=Utility.Field(StartValue=On,Read=True,Write=True)
-        self.Power=Utility.Field(StartValue=Power,Read=True,Write=False)
-        self.RequiredPower=Utility.Field(StartValue=RequiredPower,Read=True,Write=False)
-        self.Setting=Utility.Field(StartValue=Setting,Read=True,Write=True)
+        self.Error=Field(StartValue=0,Read=True,Write=False)
+        self.LineNumber=Field(StartValue=0,Read=True,Write=True)
+        self.On=Field(StartValue=On,Read=True,Write=True)
+        self.Power=Field(StartValue=Power,Read=True,Write=False)
+        self.RequiredPower=Field(StartValue=RequiredPower,Read=True,Write=False)
+        self.Setting=Field(StartValue=Setting,Read=True,Write=True)
         self.Slots=Slots
         self.Pins=Pins
         self.Pins.db=ReferenceId
         
 
         super().__init__(self.__class__.__name__,Name, ReferenceId)
+

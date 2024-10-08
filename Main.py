@@ -1,7 +1,8 @@
 import Devices
 import json
 from Error import *
-import importlib
+import Devices
+#import importlib
 class State:
     def __init__(self,RunningDevice:int,Script:str,Devices:dict):
         self.Registers={f"r{X}":0 for X in range(0,18)}
@@ -29,14 +30,14 @@ class State:
     
     @staticmethod
     def ParseConfigFile(Data):
-        Devices={}
+        DevicesList={}
         for X,Y in Data["Devices"].items():
-            DeviceClass=importlib.import_module(f'Utility.{Y["Type"]}',__name__)
+            DeviceClass=getattr(Devices,f'{Y["Type"]}').ParseConfigFile(Y)
             print(DeviceClass)
 
 
 if __name__ == "__main__":
-    Devices={69:Devices.StructureCircuitHousing(ReferenceId=69,Pins=Devices.Pins())}
-    S=State(69,"",Devices=Devices)
-    open("Test.json","w").write(json.dumps(S.DumpConfigFile()))
+    DevicesList={69:Devices.StructureCircuitHousing(ReferenceId=69,Pins=Devices.Pins())}
+    S=State(69,"",Devices=DevicesList)
+    open("Test.json","w").write(json.dumps(S.DumpConfigFile(),indent=4))
     State.ParseConfigFile(json.load(open("Test.json","r")))
