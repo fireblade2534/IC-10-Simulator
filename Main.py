@@ -1,6 +1,7 @@
 import Devices
 import json
 from Error import *
+import importlib
 class State:
     def __init__(self,RunningDevice:int,Script:str,Devices:dict):
         self.Registers={f"r{X}":0 for X in range(0,18)}
@@ -22,13 +23,15 @@ class State:
             DeviceName,DeviceValue=Y.GetConfig()
             ParsedDevices[X]={"Type":DeviceName,"Args":DeviceValue}
         Output={"Constants":self.Constants,
-                "Devices":ParsedDevices}
+                "Devices":ParsedDevices,"RunningDevice":self.RunningDevice,"Script":self.Script}
         return Output
 
     
     @staticmethod
-    def ParseConfigFile(Text):
-        Text=Text.split("\n")
+    def ParseConfigFile(Data):
+        Devices={}
+        for X,Y in Data["Devices"]:
+            pass
 
 
 if __name__ == "__main__":
