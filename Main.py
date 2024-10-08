@@ -30,11 +30,13 @@ class State:
     @staticmethod
     def ParseConfigFile(Data):
         Devices={}
-        for X,Y in Data["Devices"]:
-            pass
+        for X,Y in Data["Devices"].items():
+            DeviceClass=importlib.import_module(f'Utility.{Y["Type"]}',__name__)
+            print(DeviceClass)
 
 
 if __name__ == "__main__":
     Devices={69:Devices.StructureCircuitHousing(ReferenceId=69,Pins=Devices.Pins())}
     S=State(69,"",Devices=Devices)
     open("Test.json","w").write(json.dumps(S.DumpConfigFile()))
+    State.ParseConfigFile(json.load(open("Test.json","r")))
