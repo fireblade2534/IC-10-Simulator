@@ -1,4 +1,5 @@
 import Utility
+from Error import *
 class Device:
     def __init__(self,PrefabName:str,Name:str=None,ReferenceId:int=None):
         self.PrefabName=PrefabName
@@ -8,26 +9,59 @@ class Device:
         self.Name=Name
         self.ReferenceId=Utility.Field(StartValue=ReferenceId,Read=True,Write=False)
 
+    def GetConfig(self):
+        Output={}
+        for X,Y in self.__dict__.items():
+            if type(Y) == str:
+                Output[X]={"Type":"str","Args":Y}
+            elif type(Y) == list:
+                Output[X]={"Type":"list","Args":[]}
+                for B in Y:
+                    ItemName,ItemValue=B.GetConfig()
+                    Output[X]["Args"].append({"Type":ItemName,"Args":ItemValue})
+            elif type(Y) == int:
+                pass
+            else:
+                try:
+                    ItemName,ItemValue=Y.GetConfig()
+                    Output[X]={"Type":ItemName,"Args":ItemValue}
+                except:
+                    raise BadConfigType(Y)
+        return self.PrefabName,Output
+
 class Pins:
-        def __init__(self,d0:int=0,d1:int=0,d2:int=0,d3:int=0,d4:int=0,d5:int=0):
-            self.d0=d0
-            self.d1=d1
-            self.d2=d2
-            self.d3=d3
-            self.d4=d4
-            self.d5=d5
+    def __init__(self,d0:int=0,d1:int=0,d2:int=0,d3:int=0,d4:int=0,d5:int=0):
+        self.d0=d0
+        self.d1=d1
+        self.d2=d2
+        self.d3=d3
+        self.d4=d4
+        self.d5=d5
+    
+    def GetConfig(self):
+        return "Pins",{"d0":self.d0,"d1":self.d1,"d2":self.d2,"d3":self.d3,"d4":self.d4,"d5":self.d5}
 
 class Slot:
-     def __init__(self,Class:int=0,Damage:int=0,MaxQuantity:int=0,OccupantHash:int=0,Occupied:int=0,PrefabHash:int=0,Quantity:int=0,ReferenceId:int=0,SortingClass:int=0):
-          self.Class=Utility.Field(StartValue=Class,Read=True,Write=False)
-          self.Damage=Utility.Field(StartValue=Damage,Read=True,Write=False)
-          self.MaxQuantity=Utility.Field(StartValue=MaxQuantity,Read=True,Write=False)
-          self.OccupantHash=Utility.Field(StartValue=OccupantHash,Read=True,Write=False)
-          self.Occupied=Utility.Field(StartValue=Occupied,Read=True,Write=False)
-          self.PrefabHash=Utility.Field(StartValue=PrefabHash,Read=True,Write=False)
-          self.Quantity=Utility.Field(StartValue=Quantity,Read=True,Write=False)
-          self.ReferenceId=Utility.Field(StartValue=ReferenceId,Read=True,Write=False)
-          self.SortingClass=Utility.Field(StartValue=SortingClass,Read=True,Write=False)
+    def __init__(self,Class:int=0,Damage:int=0,MaxQuantity:int=0,OccupantHash:int=0,Occupied:int=0,PrefabHash:int=0,Quantity:int=0,ReferenceId:int=0,SortingClass:int=0):
+        self.Class=Utility.Field(StartValue=Class,Read=True,Write=False)
+        self.Damage=Utility.Field(StartValue=Damage,Read=True,Write=False)
+        self.MaxQuantity=Utility.Field(StartValue=MaxQuantity,Read=True,Write=False)
+        self.OccupantHash=Utility.Field(StartValue=OccupantHash,Read=True,Write=False)
+        self.Occupied=Utility.Field(StartValue=Occupied,Read=True,Write=False)
+        self.PrefabHash=Utility.Field(StartValue=PrefabHash,Read=True,Write=False)
+        self.Quantity=Utility.Field(StartValue=Quantity,Read=True,Write=False)
+        self.ReferenceId=Utility.Field(StartValue=ReferenceId,Read=True,Write=False)
+        self.SortingClass=Utility.Field(StartValue=SortingClass,Read=True,Write=False)
+    
+    def GetConfig(self):
+        Output={}
+        for X,Y in self.__dict__.items():
+            try:
+                ItemName,ItemValue=Y.GetConfig()
+                Output[X]={"Type":ItemName,"Args":ItemValue}
+            except:
+                raise BadConfigType(Y)
+        return "Slot",Output
 
 class StructureCircuitHousing(Device):
     
