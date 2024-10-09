@@ -12,7 +12,7 @@ class State:
         self.Devices=Devices
 
         self.Script=Script
-        self.Lines=0
+        self.LineNumber=0
 
         self.RunningDevice=RunningDevice
 
@@ -38,10 +38,23 @@ class State:
             DevicesList.append(DeviceClass)
             print(DeviceClass)
     
+    def GetArgIndex(self,Value):
+        if Value in self.Constants:
+            return -1
+        if Value[0] == "r":
+            try:
+                Index=int(Value[1:])
+                if Index >= 0 and Index <= 16
+                return self.Registers[]
+            except:
+                pass
+
+
     def Instruction_Define(self,**args):
         self.Constants[args[1],args[2]]
     
-    def 
+    def Instruction_Move(self,**args):
+        Index1
 
 
 
