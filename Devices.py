@@ -46,7 +46,8 @@ class Device:
                     FinalArgs[X].append(Item)
             else:
                 FinalArgs[X]=globals()[f'{Y["Type"]}'].ParseConfigFile(Y)
-        globals()[f'{Data["Type"]}'](*FinalArgs)
+        print(FinalArgs)
+        globals()[f'{Data["Type"]}'](**FinalArgs)
 
 class Pins:
     def __init__(self,d0:int=0,d1:int=0,d2:int=0,d3:int=0,d4:int=0,d5:int=0):
@@ -92,7 +93,7 @@ class Slot:
     
 class StructureCircuitHousing(Device):
     
-    def __init__(self, Name: str=None, ReferenceId: int = None,On:int=0,Power: int=1,RequiredPower:int=0,Setting:int=0,Pins:Pins=None,Slots:list[Slot]=[Slot()]):
+    def __init__(self, Name: str=None, ReferenceId: int = None,On:int=0,Power: int=1,RequiredPower:int=0,Setting:int=0,Pins:Pins=None,Slots:list[Slot]=[Slot()],**kwargs):
         self.Error=Field(StartValue=0,Read=True,Write=False)
         self.LineNumber=Field(StartValue=0,Read=True,Write=True)
         self.On=Field(StartValue=On,Read=True,Write=True)
