@@ -12,11 +12,13 @@ class State:
         self.Devices=Devices
 
         self.Script=Script
+        self.Lines=0
 
         self.RunningDevice=RunningDevice
 
     def ParseScript(self):
-        pass
+        self.Script=self.Script.split("\n")
+
 
     def DumpConfigFile(self):
         ParsedDevices={}
@@ -33,7 +35,14 @@ class State:
         DevicesList={}
         for X,Y in Data["Devices"].items():
             DeviceClass=getattr(Devices,f'{Y["Type"]}').ParseConfigFile(Y)
+            DevicesList.append(DeviceClass)
             print(DeviceClass)
+    
+    def Instruction_Define(self,**args):
+        self.Constants[args[1],args[2]]
+    
+    def 
+
 
 
 if __name__ == "__main__":
