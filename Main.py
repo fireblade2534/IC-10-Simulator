@@ -58,16 +58,17 @@ class State:
     
     def Instruction_Move(self,**args):
         Index1=self.GetArgIndex(args[1])
-        Value=0
+
         if Index1 < 0:
             self.Log.Warning("You can not set a constant" if Index1 == -2 else "You cannot set a ",Caller=f"Script line {self.LineNumber}")
-            
+            return
+        Value1=self.Registers[Index1]
     def RunUpdate(self):
         FunctionMap={"define":self.Instruction_Define,"move":self.Instruction_Move}
         
         CurrentLine=self.Script[self.LineNumber].split(" ")
         if CurrentLine[0] in FunctionMap:
-            pass
+            FunctionMap[CurrentLine[0]](*CurrentLine)
         else:
             self.Log.Warning(f"Unknown function on line",Caller=f"Script line {self.LineNumber}")
 
