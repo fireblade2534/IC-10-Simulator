@@ -1,13 +1,13 @@
-import Devices
+import EmulatorFunctions.Devices as Devices
 import json
-from Error import *
-import Devices
-import Logging
+from UtilityFunctions.Error import *
+import UtilityFunctions.Logging as Logging
+from UtilityFunctions.Utility import *
 #import importlib
 class State:
     def __init__(self,RunningDevice:int,Script:str,Devices:dict,**kwargs):
         self.Registers={f"r{X}":0 for X in range(0,18)}
-        self.RegisterAliases={"sp":16,"ra":17}
+        self.RegisterAliases={"sp":"r16","ra":"r17"}
         self.Stack=[0 for X in range(512)]
         self.Constants={}
         self.Devices=Devices
@@ -15,12 +15,29 @@ class State:
         self.Script=Script
         self.LineNumber=0
         self.RunningDevice=RunningDevice
+        self.DevicePins=[]
 
         self.Log=Logging.Logging(**kwargs)
 
+    def LoadFunctionList(self,FilePath="Functions.json"):
+        self.FunctionMap=json.load(open(FilePath,"r"))
+        for X,Y in self.FunctionMap.items():
+            Y["Function"]=getattr(self,Y["Function"])
+        
+
+    def PrintRegisters(self):
+        Output=["\n+------------+-------+\n|Registers   |       |"]
+        for X,Y in self.Registers.items():
+            Output.append(f"|{X:<12}|{Y:<7}|")
+        self.Log.Info("\n".join(Output)+"\n+------------+-------+")
+
     def ParseScript(self):
         self.Script=self.Script.split("\n")
+        CurrentDevice=self.Devices[self.RunningDevice]
+        #Make it get device pins
 
+    def ScriptLength(self):
+        return len(self.Script)
 
     def DumpConfigFile(self):
         ParsedDevices={}
@@ -30,7 +47,6 @@ class State:
         Output={"Constants":self.Constants,
                 "Devices":ParsedDevices,"RunningDevice":self.RunningDevice,"Script":self.Script}
         return Output
-
     
     @staticmethod
     def ParseConfigFile(Data):
@@ -39,38 +55,88 @@ class State:
             DeviceClass=getattr(Devices,f'{Y["Type"]}').ParseConfigFile(Y)
             #make this work later
     
+    def GetArgType(self,Value):
+        if len(Value) == 0:
+            return "None"
+        
+        if Value in self.Constants:
+            return "Constant"
+
+        if Value in self.Registers or Value in self.RegisterAliases:
+            return "Register"
+        
+        try:
+            int(Value)
+            return "Number"
+        except:
+            pass
+
+        return "String"
+
     def GetArgIndex(self,Value):
         if Value in self.Constants:
-            return -2
+            return -1
         if Value[0] == "r":
-            try:
-                Index=int(Value[1:])
-                if Index >= 0 and Index <= 17:
-                    return Index
-            except:
-                pass
+            if Value in self.Registers:
+                return Value
         if Value in self.RegisterAliases:
             return self.RegisterAliases[Value]
         return -1
 
-    def Instruction_Define(self,**args):
-        self.Constants[args[1],args[2]]
-    
-    def Instruction_Move(self,**args):
-        Index1=self.GetArgIndex(args[1])
+    def GetArgValue(self,Value):
+        if Value in self.Constants:
+            return self.Constants[Value]
+        if Value[0] == "r":
+            if Value in self.Registers:
+                return self.Registers[Value]
+        if Value in self.RegisterAliases:
+            return self.Registers[self.RegisterAliases[Value]]
+        try:
+            return int(Value)
+        except:
+            return None
 
-        if Index1 < 0:
-            self.Log.Warning("You can not set a constant" if Index1 == -2 else "You cannot set a ",Caller=f"Script line {self.LineNumber}")
-            return
-        Value1=self.Registers[Index1]
-    def RunUpdate(self):
-        FunctionMap={"define":self.Instruction_Define,"move":self.Instruction_Move}
+    def Instruction_Define(self,*args):
+        Value=int(args[2])
+        self.Constants[args[1]]=Value
+        if args[1] in self.RegisterAliases:
+            del self.RegisterAliases[args[1]]
+    
+    def Instruction_Move(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value2=self.GetArgValue(args[2])
+        self.Registers[Index1]=Value2
         
-        CurrentLine=self.Script[self.LineNumber].split(" ")
-        if CurrentLine[0] in FunctionMap:
-            FunctionMap[CurrentLine[0]](*CurrentLine)
+    def Instruction_Alias(self,*args):
+        if args[2][0] == "r":
+            self.RegisterAliases[args[1]]=args[2]
+            if args[1] in self.Constants:
+                del self.Constants[args[1]]
+        elif args[2][0] == "d":
+            pass #ADD DEVICE SUPPORT
         else:
-            self.Log.Warning(f"Unknown function on line",Caller=f"Script line {self.LineNumber}")
+            self.Log.Error("Unkown alias type not caught by update")
+        
+    def RunUpdate(self):
+        CurrentLine=self.Script[self.LineNumber]
+        if CurrentLine.strip() != "":
+            CurrentLine=CurrentLine.split(" ")
+            if CurrentLine[0] in self.FunctionMap:
+
+                CurrentFunction=self.FunctionMap[CurrentLine[0]]
+                if len(CurrentLine) - 1 == len(CurrentFunction["Args"]):
+                    
+                    for X in range(0,len(CurrentFunction["Args"])):
+                        if self.GetArgType(CurrentLine[X+1]) not in CurrentFunction["Args"][X].split("|"):
+
+                            self.Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.LineNumber}")
+                            break
+                    else:
+                        self.FunctionMap[CurrentLine[0]]["Function"](*CurrentLine)
+                else:
+                    self.Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.LineNumber}")
+            else:
+                self.Log.Warning(f"Unknown function {CurrentLine[0]}",Caller=f"Script line {self.LineNumber}")
 
         self.LineNumber+=1
         if self.LineNumber > len(self.Script):
@@ -78,8 +144,11 @@ class State:
 
 if __name__ == "__main__":
     DevicesList={69:Devices.StructureCircuitHousing(ReferenceId=69,Pins=Devices.Pins())}
-    S=State(69,"stuff",Devices=DevicesList,LogToFile=False,LogConsoleLevel=Logging.DEBUG)
+    S=State(69,open("Test.ic10","r").read(),Devices=DevicesList,LogToFile=False,LogConsoleLevel=Logging.DEBUG)
     S.ParseScript()
-    S.RunUpdate()
+    S.LoadFunctionList()
+    for X in range(S.ScriptLength()):
+        S.RunUpdate()
+    S.PrintRegisters()
     #open("Test.json","w").write(json.dumps(S.DumpConfigFile(),indent=4))
     #State.ParseConfigFile(json.load(open("Test.json","r")))

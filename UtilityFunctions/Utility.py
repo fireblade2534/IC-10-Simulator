@@ -5,6 +5,21 @@ def ComputeCRC32(Input):
         Hash = Hash - (1 << 32)
     return Hash
 
+def SplitNotStringSpaces(String,SplitChar):
+    Splits=[]
+    CurrentString=""
+    InBadString=False
+    for X in String:
+        if X == '"':
+            InBadString=not InBadString
+        if InBadString == False:
+            if X == SplitChar:
+                Splits.append(CurrentString)
+                CurrentString=""
+                continue
+        CurrentString+=X
+    Splits.append(CurrentString)
+    return Splits
 class Field:
     def __init__(self,StartValue:int=0,Read:bool=False,Write:bool=False):
         self.Value=StartValue

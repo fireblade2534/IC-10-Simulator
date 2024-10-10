@@ -57,7 +57,8 @@ class Logging:
     def _AddToLogging(self,Message,LogLevel,Color,Caller):
         if Caller == None:
             Caller=inspect.stack()[2]
-        FormattedMessage=f"{Color}{datetime.datetime.now().strftime(self.LogMessagePrefix)} {LogLevel.Word} [{Caller.filename.split('/')[-1]}/{Caller.function}:{Caller.lineno}] : {Message}{Style.RESET_ALL}" 
+            Caller=f"{Caller.filename.split('/')[-1]}/{Caller.function}:{Caller.lineno}"
+        FormattedMessage=f"{Color}{datetime.datetime.now().strftime(self.LogMessagePrefix)} {LogLevel.Word} [{Caller}] : {Message}{Style.RESET_ALL}" 
         if self.LogToConsole:
             if LogLevel.Number >= self.LogConsoleLevel.Number:
                 print(FormattedMessage)

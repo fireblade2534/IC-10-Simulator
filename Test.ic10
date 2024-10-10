@@ -1,0 +1,5 @@
+define Test 32
+alias Bob r4
+move r1 Test
+
+move Bob r1

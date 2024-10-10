@@ -1,0 +1,5 @@
+{
+  "define": { "Function": "Instruction_Define", "Args": ["String", "Number|Hash"] },
+  "alias": { "Function": "Instruction_Alias", "Args": ["String", "Register|Device"] },
+  "move": { "Function": "Instruction_Move", "Args": ["Register", "Number|Constant|Register|Hash"] }
+}

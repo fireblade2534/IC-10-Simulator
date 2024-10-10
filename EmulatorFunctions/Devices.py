@@ -1,5 +1,6 @@
-from Utility import *
-from Error import *
+from UtilityFunctions.Error import *
+from UtilityFunctions.Utility import *
+
 class Device:
     def __init__(self,PrefabName:str,Name:str=None,ReferenceId:int=None):
         self.PrefabName=PrefabName
