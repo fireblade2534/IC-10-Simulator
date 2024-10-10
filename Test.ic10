@@ -1,5 +1,5 @@
 define Test 32
 alias Bob r4
-move r1 Test
+move r1 HASH("Bob")
 
 move Bob r1

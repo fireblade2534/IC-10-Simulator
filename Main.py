@@ -65,12 +65,15 @@ class State:
         if Value in self.Registers or Value in self.RegisterAliases:
             return "Register"
         
+        if Value.startswith('HASH("') and Value.endswith('")'):
+            return "Hash"
+        
         try:
             int(Value)
             return "Number"
         except:
             pass
-
+        
         return "String"
 
     def GetArgIndex(self,Value):
@@ -91,6 +94,11 @@ class State:
                 return self.Registers[Value]
         if Value in self.RegisterAliases:
             return self.Registers[self.RegisterAliases[Value]]
+        
+        if Value.startswith('HASH("') and Value.endswith('")'):
+            Value=Value[6:-2]
+            return ComputeCRC32(Value)
+
         try:
             return int(Value)
         except:
@@ -120,7 +128,7 @@ class State:
     def RunUpdate(self):
         CurrentLine=self.Script[self.LineNumber]
         if CurrentLine.strip() != "":
-            CurrentLine=CurrentLine.split(" ")
+            CurrentLine=SplitNotStringSpaces(CurrentLine," ")
             if CurrentLine[0] in self.FunctionMap:
 
                 CurrentFunction=self.FunctionMap[CurrentLine[0]]
