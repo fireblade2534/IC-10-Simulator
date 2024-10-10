@@ -4,5 +4,9 @@
   "move": { "Function": "Instruction_Move", "Args": ["Register", "Number|Constant|Register|Hash"] },
   "add": { "Function": "Instruction_Add", "Args": ["Register","Register|Number|Constant|Hash", "Register|Number|Constant|Hash"] },
   "sub": { "Function": "Instruction_Sub", "Args": ["Register","Register|Number|Constant|Hash", "Register|Number|Constant|Hash"] },
-  "mul": { "Function": "Instruction_Mul", "Args": ["Register","Register|Number|Constant|Hash", "Register|Number|Constant|Hash"] }
+  "mul": { "Function": "Instruction_Mul", "Args": ["Register","Register|Number|Constant|Hash", "Register|Number|Constant|Hash"] },
+  "abs": { "Function": "Instruction_Abs", "Args": ["Register","Register|Number|Constant|Hash"] },
+  "ceil": { "Function": "Instruction_Ceil", "Args": ["Register","Register|Number|Constant|Hash"] },
+  "floor": { "Function": "Instruction_Floor", "Args": ["Register","Register|Number|Constant|Hash"] },
+  "exp": { "Function": "Instruction_Exp", "Args": ["Register","Register|Number|Constant|Hash","Register|Number|Constant|Hash"] },
 }

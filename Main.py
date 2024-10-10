@@ -3,6 +3,7 @@ import json
 from UtilityFunctions.Error import *
 import UtilityFunctions.Logging as Logging
 from UtilityFunctions.Utility import *
+import math
 #import importlib
 class State:
     def __init__(self,RunningDevice:int,Script:str,Devices:dict,**kwargs):
@@ -145,7 +146,34 @@ class State:
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
         self.Registers[Index1]=Value1 * Value2
+
+    def Instruction_Div(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        self.Registers[Index1]=Value1 / Value2
         
+    def Instruction_Abs(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        self.Registers[Index1]=abs(Value1)
+    
+    def Instruction_Ceil(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        self.Registers[Index1]=math.ceil(Value1)
+
+    def Instruction_Floor(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        self.Registers[Index1]=math.floor(Value1)
+
+    def Instruction_Exp(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        self.Registers[Index1]=Value1 ** Value2
+
     def RunUpdate(self):
         CurrentLine=self.Script[self.LineNumber]
         if CurrentLine.strip() != "":
