@@ -56,6 +56,7 @@ class State:
             #make this work later
     
     def GetArgType(self,Value):
+        #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if len(Value) == 0:
             return "None"
         
@@ -77,6 +78,7 @@ class State:
         return "String"
 
     def GetArgIndex(self,Value):
+        #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if Value in self.Constants:
             return -1
         if Value[0] == "r":
@@ -87,6 +89,7 @@ class State:
         return -1
 
     def GetArgValue(self,Value):
+        #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if Value in self.Constants:
             return self.Constants[Value]
         if Value[0] == "r":
@@ -124,6 +127,12 @@ class State:
             pass #ADD DEVICE SUPPORT
         else:
             self.Log.Error("Unkown alias type not caught by update")
+
+    def Instruction_Add(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        self.Registers[Index1]=Value1 + Value2
         
     def RunUpdate(self):
         CurrentLine=self.Script[self.LineNumber]
