@@ -133,6 +133,18 @@ class State:
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
         self.Registers[Index1]=Value1 + Value2
+
+    def Instruction_Sub(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        self.Registers[Index1]=Value1 - Value2
+
+    def Instruction_Mul(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        self.Registers[Index1]=Value1 * Value2
         
     def RunUpdate(self):
         CurrentLine=self.Script[self.LineNumber]
