@@ -1,24 +1,29 @@
 {
-  "Devices": [
-    {
-      "Name": "StructureCircuitHousing",
-      "Fields": {
-        "Error": { "Value": 0, "Read": true, "Write": false },
-        "LineNumber": { "Value": 0, "Read": true, "Write": true },
-        "On": { "Value": 1, "Read": true, "Write": true },
-        "Power": { "Value": 1, "Read": true, "Write": false },
-        "RequiredPower": { "Value": 0, "Read": true, "Write": false },
-        "Setting": { "Value": 0, "Read": true, "Write": true }
-      },
-      "Pins": {
-        "Number":6
-      },
-      "Slots": {
-        "Number":1
-      },
-      "Properties": {
-        "RunCode":true
+  "StructureCircuitHousing": {
+    "Fields": {
+      "Activate": { "Value": 0, "Read": true, "Write": true },
+      "Error": { "Value": 0, "Read": true, "Write": false },
+      "LineNumber": { "Value": 0, "Read": true, "Write": true },
+      "On": { "Value": 1, "Read": true, "Write": true },
+      "Power": { "Value": 1, "Read": true, "Write": false },
+      "RequiredPower": { "Value": 0, "Read": true, "Write": false },
+      "Setting": { "Value": 0, "Read": true, "Write": true }
+    },
+    "Pins": {
+      "Number": 6
+    },
+    "Slots": {
+      "Number": 1
+    },
+    "Properties": {
+      "RunCode": true,
+      "Stack":{
+        "Enabled":true,
+        "Length":512
       }
+    },
+    "Variables": {
+      "Code":""
     }
-  ]
+  }
 }
