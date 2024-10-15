@@ -1,0 +1,11 @@
+{
+  "Devices": [
+    {
+      "Name": "StructureCircuitHousing",
+      "Fields": {
+        "Error": { "Value": 0, "Read": true, "Write": false },
+        "LineNumber": { "Value": 0, "Read": true, "Write": true }
+      }
+    }
+  ]
+}
