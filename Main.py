@@ -1,4 +1,4 @@
-import EmulatorFunctions.Devices as Devices
+import EmulatorFunctions.DevicesOld as DevicesOld
 import json
 from UtilityFunctions.Error import *
 import UtilityFunctions.Logging as Logging
@@ -53,7 +53,7 @@ class State:
     def ParseConfigFile(Data):
         DevicesList={}
         for X,Y in Data["Devices"].items():
-            DeviceClass=getattr(Devices,f'{Y["Type"]}').ParseConfigFile(Y)
+            DeviceClass=getattr(DevicesOld,f'{Y["Type"]}').ParseConfigFile(Y)
             #make this work later
     
     def GetArgType(self,Value):
@@ -200,7 +200,7 @@ class State:
             self.LineNumber=0
 
 if __name__ == "__main__":
-    DevicesList={69:Devices.StructureCircuitHousing(ReferenceId=69,Pins=Devices.Pins())}
+    DevicesList={69:DevicesOld.StructureCircuitHousing(ReferenceId=69,Pins=DevicesOld.Pins())}
     S=State(69,open("Test.ic10","r").read(),Devices=DevicesList,LogToFile=False,LogConsoleLevel=Logging.DEBUG)
     S.ParseScript()
     S.LoadFunctionList()
