@@ -49,4 +49,4 @@ class DeviceMaker:
         Output["Fields"]["ReferenceId"]={ "Value": ReferenceId, "Read": True, "Write": False }
         Output["Fields"]["PrefabHash"]={ "Value": PrefabHash, "Read": True, "Write": False }
 
-        return Device(DeviceType,PrefabHash,DeviceName,ReferenceId)
+        return Device(DeviceType,PrefabHash,DeviceName,ReferenceId,Output["Fields"],Output["Pins"])

@@ -17,4 +17,4 @@ if __name__ == "__main__":
     MNet=Network.Network()
     DM=Devices.DeviceMaker()
     MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69))
-    MM=MainManager()
+    MM=MainManager(MNet)
