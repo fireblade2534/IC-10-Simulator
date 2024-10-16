@@ -18,3 +18,10 @@ class InvalidDeviceArgument(Exception):
         self.message = f"Unkown device argument: {Type}"
     def __str__(self):
         return str(self.message)
+    
+class RefIdTaken(Exception):
+    '''Raise when a device trys to register on a network that already has that ref Id'''
+    def __init__(self, ID, payload=None):
+        self.message = f"Ref Id {ID} is already in use"
+    def __str__(self):
+        return str(self.message)

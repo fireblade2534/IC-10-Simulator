@@ -17,13 +17,13 @@
     },
     "Properties": {
       "RunCode": true,
-      "Stack":{
-        "Enabled":true,
-        "Length":512
+      "Stack": {
+        "Enabled": true,
+        "Length": 512
       }
     },
     "Variables": {
-      "Code":""
+      "Code": "NONE"
     }
   }
 }
