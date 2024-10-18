@@ -9,6 +9,16 @@ class Device:
         self.DeviceName=DeviceName
         self.ReferenceId=ReferenceId
         self.Fields=Fields
+        self.Pins=Pins
+        self.Slots=Slots
+        self.Varibles=Varibles
+        self.RunsCode=RunsCode
+        self.StackEnabled=StackEnabled
+        self.StackLength=StackLength
+        
+    def RunScript(self):
+        pass
+
 class DeviceMaker:
     def __init__(self,DeviceFile:str="EmulatorFunctions/Devices.json"):
         self.Devices=json.loads(open(DeviceFile,"r").read())
@@ -48,6 +58,9 @@ class DeviceMaker:
         
         Output["Fields"]["ReferenceId"]={ "Value": ReferenceId, "Read": True, "Write": False }
         Output["Fields"]["PrefabHash"]={ "Value": PrefabHash, "Read": True, "Write": False }
+
+        for X,Y in Output["Fields"].items():
+            Output["Fields"][X]=Field(Y["Value"],Y["Read"],Y["Write"])
 
         Property=Output["Properties"]
 

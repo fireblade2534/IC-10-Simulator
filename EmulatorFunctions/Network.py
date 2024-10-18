@@ -14,6 +14,6 @@ class Network:
             raise RefIdTaken(Device.ReferenceId)
         
     def RunScripts(self):
-        for X in self.DeviceList:
-            if X.RunsCode:
-                X.ScriptUpdate()
+        for _,Y in self.DeviceList.items():
+            if Y.RunsCode:
+                Y.RunScript()
