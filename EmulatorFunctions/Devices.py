@@ -49,4 +49,6 @@ class DeviceMaker:
         Output["Fields"]["ReferenceId"]={ "Value": ReferenceId, "Read": True, "Write": False }
         Output["Fields"]["PrefabHash"]={ "Value": PrefabHash, "Read": True, "Write": False }
 
-        return Device(DeviceType,PrefabHash,DeviceName,ReferenceId,Output["Fields"],Output["Pins"])
+        Property=Output["Properties"]
+
+        return Device(DeviceType,PrefabHash,DeviceName,ReferenceId,Output["Fields"],Output["Pins"],Output["Slots"],Output["Variables"],Property["RunCode"],Property["Stack"]["Enabled"],Property["Stack"]["Length"])
