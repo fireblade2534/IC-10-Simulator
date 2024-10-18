@@ -1,1 +1,4 @@
 .venv
+__pycache__
+EmulatorFunctions/__pycache__/*
+UtilityFunctions/__pycache__/*
