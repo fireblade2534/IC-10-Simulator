@@ -176,6 +176,11 @@ class CodeRunner:
         self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
         self.LineNumber=Line - 1
 
+    def Instruction_JumpR(self,*args):
+        Line=self.GetArgValue(args[1])
+        
+        self.LineNumber+=Line - 1
+
     def RunUpdate(self):
         if self.LineNumber >= len(self.Code):
             return

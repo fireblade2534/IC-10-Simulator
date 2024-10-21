@@ -1,5 +1,3 @@
 move r1 0
-
-Loop:
 add r1 r1 1
-j Loop
+jr -1
