@@ -16,4 +16,4 @@ class Network:
     def RunScripts(self):
         for _,Y in self.DeviceList.items():
             if Y.RunsCode:
-                Y.RunScript()
+                Y.State.RunUpdate()

@@ -5,14 +5,8 @@ from UtilityFunctions.Error import *
 import UtilityFunctions.Logging as Logging
 from UtilityFunctions.Utility import *
 import math
-class CodeRunner:
-    def __init__(self,Parent,FilePath="Functions.json"):
-        self.FunctionMap=json.load(open(FilePath,"r"))
-        for X,Y in self.FunctionMap.items():
-            Y["Function"]=getattr(self,Y["Function"])
-        self.Parent=Parent
-    def 
 
+Log=Logging.Logging(LogToFile=False)
 class MainManager:
     def __init__(self,Networks:list[Network.Network]=[]):
         self.Networks=Networks
@@ -27,4 +21,7 @@ if __name__ == "__main__":
     DM=Devices.DeviceMaker()
     MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=open("Test.ic10","r").read()))
     MM=MainManager([MNet])
-    MM.RunScripts()
+    MM.Networks[0].DeviceList[69].State.PrintConstants()
+    for X in range(0,10):
+        MM.RunScripts()
+        MM.Networks[0].DeviceList[69].State.PrintRegisters()

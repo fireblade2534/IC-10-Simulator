@@ -1,7 +1,5 @@
-define Test 32
-alias Bob r4
-move r1 HASH("Bob")
+move r1 0
 
-move Bob r1
-
-add r1 10 25
+Loop:
+add r1 r1 1
+j Loop
