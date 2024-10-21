@@ -169,7 +169,11 @@ class CodeRunner:
 
     def Instruction_Jump(self,*args):
         Line=self.GetArgValue(args[1])
-        print(Line)
+        self.LineNumber=Line - 1
+
+    def Instruction_JumpAL(self,*args):
+        Line=self.GetArgValue(args[1])
+        self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
         self.LineNumber=Line - 1
 
     def RunUpdate(self):
