@@ -246,7 +246,7 @@ class CodeRunner:
         self.LineNumber+=Line - 1
 
     def RunUpdate(self):
-        if self.LineNumber >= len(self.Code) and self.Parent.Fields["Error"].Value == 0:
+        if self.LineNumber >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
             return
         CurrentLine=self.Code[self.LineNumber].strip()
         if CurrentLine != "":
