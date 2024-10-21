@@ -6,11 +6,11 @@ import UtilityFunctions.Logging as Logging
 from UtilityFunctions.Utility import *
 import math
 class CodeRunner:
-    def __init__(self,FilePath="Functions.json"):
+    def __init__(self,Parent,FilePath="Functions.json"):
         self.FunctionMap=json.load(open(FilePath,"r"))
         for X,Y in self.FunctionMap.items():
             Y["Function"]=getattr(self,Y["Function"])
-
+        self.Parent=Parent
     def 
 
 class MainManager:
