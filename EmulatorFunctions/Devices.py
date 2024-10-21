@@ -134,12 +134,9 @@ class CodeRunner:
         except:
             return None
 
-    def CheckError(self,*args):
-        return None in args
-
     def Instruction_Define(self,*args):
         Value=int(args[2])
-        if self.CheckError(Value):return
+        if self.Parent.Field["Error"].Value == 1:return
         self.Constants[args[1]]=Value
         if args[1] in self.RegisterAliases:
             del self.RegisterAliases[args[1]]
@@ -148,7 +145,7 @@ class CodeRunner:
     def Instruction_Move(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value2=self.GetArgValue(args[2])
-        if self.CheckError(Index1,Value2):return
+        if self.Parent.Field["Error"].Value == 1:return
         self.Registers[Index1]=Value2
         
     def Instruction_Alias(self,*args):
@@ -169,7 +166,7 @@ class CodeRunner:
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
-        if self.CheckError(Index1,Value1,Value2):return
+        if self.Parent.Field["Error"].Value == 1:return
 
         self.Registers[Index1]=Value1 + Value2
 
@@ -177,7 +174,7 @@ class CodeRunner:
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
-        if self.CheckError(Index1,Value1,Value2):return
+        if self.Parent.Field["Error"].Value == 1:return
 
         self.Registers[Index1]=Value1 - Value2
 
@@ -185,7 +182,7 @@ class CodeRunner:
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
-        if self.CheckError(Index1,Value1,Value2):return
+        if self.Parent.Field["Error"].Value == 1:return
 
         self.Registers[Index1]=Value1 * Value2
 
@@ -193,35 +190,37 @@ class CodeRunner:
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
+        if self.Parent.Field["Error"].Value == 1:return
 
-        if self.CheckError(Index1,Value1, Value2):return
         self.Registers[Index1]=Value1 / Value2
         
     def Instruction_Abs(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
+        if self.Parent.Field["Error"].Value == 1:return
+
         self.Registers[Index1]=abs(Value1)
     
     def Instruction_Ceil(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
+        if self.Parent.Field["Error"].Value == 1:return
 
-        if self.CheckError(Index1, Value1):return
         self.Registers[Index1]=math.ceil(Value1)
 
     def Instruction_Floor(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
+        if self.Parent.Field["Error"].Value == 1:return
 
-        if self.CheckError(Index1,Value1):return
         self.Registers[Index1]=math.floor(Value1)
 
     def Instruction_Exp(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
+        if self.Parent.Field["Error"].Value == 1:return
 
-        if self.CheckError(Index1,Value1,Value2):return
         self.Registers[Index1]=Value1 ** Value2
 
     def Instruction_Yield(self,*args):
@@ -229,19 +228,19 @@ class CodeRunner:
 
     def Instruction_Jump(self,*args):
         Line=self.GetArgValue(args[1])
-        if self.CheckError(Line):return
+        if self.Parent.Field["Error"].Value == 1:return
         self.LineNumber=Line - 1
 
     def Instruction_JumpAL(self,*args):
         Line=self.GetArgValue(args[1])
-        if self.CheckError(Line):return
+        if self.Parent.Field["Error"].Value == 1:return
 
         self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
         self.LineNumber=Line - 1
 
     def Instruction_JumpR(self,*args):
         Line=self.GetArgValue(args[1])
-        if self.CheckError(Line):return
+        if self.Parent.Field["Error"].Value == 1:return
         
         self.LineNumber+=Line - 1
 
