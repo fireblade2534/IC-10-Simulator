@@ -32,6 +32,7 @@ class CodeRunner:
                         self.Constants[YTemp[:-1]]=X
                     else:
                         Log.Warning("You cannot declare two lables with the same name",Caller=f"Script line {self.LineNumber}")
+                        self.Parent.Fields["Error"].Value=1
                     self.Code[X]=""
 
     def PrintRegisters(self):
@@ -57,8 +58,17 @@ class CodeRunner:
         if Value in self.Constants:
             return "Constant"
 
-        if Value in self.Registers or Value in self.RegisterAliases:
+        if Value in self.RegisterAliases:
             return "Register"
+        
+
+        if Value[0] == "r" and len(Value) > 1:
+            try:
+                InValue=int(Value.replace("r",""))
+                if InValue >=0 and InValue < 18:
+                    return "Register"
+            except:
+                pass
         
         if Value.startswith('HASH("') and Value.endswith('")'):
             return "Hash"
@@ -74,21 +84,44 @@ class CodeRunner:
     def GetArgIndex(self,Value):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if Value in self.Constants:
-            return -1
-        if Value[0] == "r":
-            if Value in self.Registers:
-                return Value
+            return None
+        
         if Value in self.RegisterAliases:
             return self.RegisterAliases[Value]
-        return -1
+
+        if Value[0] == "r":
+            try:
+                RegisterIndex=int(Value.replace("r",""))
+                for X in range(Value.count("r") - 1):
+                    if RegisterIndex >= 0 and RegisterIndex < 18:
+                        RegisterIndex=self.Registers[f"r{RegisterIndex}"]
+                    else:
+                        Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                        self.Parent.Fields["Error"].Value=1
+                        return None
+                return f"r{RegisterIndex}"
+            except:
+                pass
+        
+        return None
 
     def GetArgValue(self,Value):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if Value in self.Constants:
             return self.Constants[Value]
         if Value[0] == "r":
-            if Value in self.Registers:
-                return self.Registers[Value]
+            try:
+                RegisterIndex=int(Value.replace("r",""))
+                for X in range(Value.count("r") - 1):
+                    if RegisterIndex >= 0 and RegisterIndex < 18:
+                        RegisterIndex=self.Registers[f"r{RegisterIndex}"]
+                    else:
+                        Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                        self.Parent.Fields["Error"].Value=1
+                        return None
+                return self.Registers[f"r{RegisterIndex}"]
+            except:
+                pass
         if Value in self.RegisterAliases:
             return self.Registers[self.RegisterAliases[Value]]
         
@@ -101,8 +134,15 @@ class CodeRunner:
         except:
             return None
 
+    def CheckError(self,*args):
+        for X in args:
+            if X == None:
+                return True
+        return False
+
     def Instruction_Define(self,*args):
         Value=int(args[2])
+        if self.CheckError(Value):return
         self.Constants[args[1]]=Value
         if args[1] in self.RegisterAliases:
             del self.RegisterAliases[args[1]]
@@ -111,39 +151,53 @@ class CodeRunner:
     def Instruction_Move(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value2=self.GetArgValue(args[2])
+        if self.CheckError(Index1,Value2):return
         self.Registers[Index1]=Value2
         
     def Instruction_Alias(self,*args):
-        if args[2][0] == "r":
-            self.RegisterAliases[args[1]]=args[2]
-            if args[1] in self.Constants:
-                del self.Constants[args[1]]
-        elif args[2][0] == "d":
-            pass #ADD DEVICE SUPPORT
+        if self.GetArgType(args[1]) == "String":
+            if args[2][0] == "r":
+                self.RegisterAliases[args[1]]=args[2]
+                if args[1] in self.Constants:
+                    del self.Constants[args[1]]
+                    #Check wether it should throw an error or not
+            elif args[2][0] == "d":
+                pass #ADD DEVICE SUPPORT
+            else:
+                Log.Error("Unkown alias type not caught by update")
         else:
-            Log.Error("Unkown alias type not caught by update")
+            Log.Warning("You cannot set a register alias to a device name or a register",Caller=f"Script line {self.LineNumber}")
+            self.Parent.Fields["Error"].Value=1
     def Instruction_Add(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
+        if self.CheckError(Index1,Value1,Value2):return
+
         self.Registers[Index1]=Value1 + Value2
 
     def Instruction_Sub(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
+        if self.CheckError(Index1,Value1,Value2):return
+
         self.Registers[Index1]=Value1 - Value2
 
     def Instruction_Mul(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
+        if self.CheckError(Index1,Value1,Value2):return
+
         self.Registers[Index1]=Value1 * Value2
 
     def Instruction_Div(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
+
+        if self.CheckError(Index1,Value1, Value2):return
         self.Registers[Index1]=Value1 / Value2
         
     def Instruction_Abs(self,*args):
@@ -154,35 +208,45 @@ class CodeRunner:
     def Instruction_Ceil(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
+
+        if self.CheckError(Index1, Value1):return
         self.Registers[Index1]=math.ceil(Value1)
 
     def Instruction_Floor(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
+
+        if self.CheckError(Index1,Value1):return
         self.Registers[Index1]=math.floor(Value1)
 
     def Instruction_Exp(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
+
+        if self.CheckError(Index1,Value1,Value2):return
         self.Registers[Index1]=Value1 ** Value2
 
     def Instruction_Jump(self,*args):
         Line=self.GetArgValue(args[1])
+        if self.CheckError(Line):return
         self.LineNumber=Line - 1
 
     def Instruction_JumpAL(self,*args):
         Line=self.GetArgValue(args[1])
+        if self.CheckError(Line):return
+
         self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
         self.LineNumber=Line - 1
 
     def Instruction_JumpR(self,*args):
         Line=self.GetArgValue(args[1])
+        if self.CheckError(Line):return
         
         self.LineNumber+=Line - 1
 
     def RunUpdate(self):
-        if self.LineNumber >= len(self.Code):
+        if self.LineNumber >= len(self.Code) and self.Parent.Fields["Error"].Value == 0:
             return
         CurrentLine=self.Code[self.LineNumber].strip()
         if CurrentLine != "":
@@ -196,13 +260,16 @@ class CodeRunner:
                         if self.GetArgType(CurrentLine[X+1]) not in CurrentFunction["Args"][X].split("|"):
 
                             Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.LineNumber}")
+                            self.Parent.Fields["Error"].Value=1
                             break
                     else:
                         self.FunctionMap[CurrentLine[0]]["Function"](*CurrentLine)
                 else:
                     Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.LineNumber}")
+                    self.Parent.Fields["Error"].Value=1
             else:
                 Log.Warning(f"Unknown function {CurrentLine[0]}",Caller=f"Script line {self.LineNumber}")
+                self.Parent.Fields["Error"].Value=1
 
         self.LineNumber+=1
         #if self.LineNumber >= len(self.Code):
@@ -271,3 +338,5 @@ class DeviceMaker:
         Property=Output["Properties"]
 
         return Device(DeviceType,PrefabHash,DeviceName,ReferenceId,Output["Fields"],Output["Pins"],Output["Slots"],Output["Variables"],Property["RunCode"],Property["Stack"]["Enabled"],Property["Stack"]["Length"],Output["Variables"]["Code"])
+    
+    

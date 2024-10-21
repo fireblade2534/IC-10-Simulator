@@ -21,6 +21,8 @@ if __name__ == "__main__":
     DM=Devices.DeviceMaker()
     MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=open("Test.ic10","r").read()))
     MM=MainManager([MNet])
+    #print(MM.Networks[0].DeviceList[69].State.GetArgType("r16"))
+    #exit()
     MM.Networks[0].DeviceList[69].State.PrintConstants()
     for X in range(0,10):
         MM.RunScripts()

@@ -1,3 +1,2 @@
-move r1 0
-add r1 r1 1
-jr -1
+move r10 50
+define Bob r10
