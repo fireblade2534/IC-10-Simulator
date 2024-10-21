@@ -135,10 +135,7 @@ class CodeRunner:
             return None
 
     def CheckError(self,*args):
-        for X in args:
-            if X == None:
-                return True
-        return False
+        return None in args
 
     def Instruction_Define(self,*args):
         Value=int(args[2])

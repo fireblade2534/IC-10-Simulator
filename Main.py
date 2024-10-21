@@ -26,4 +26,6 @@ if __name__ == "__main__":
     MM.Networks[0].DeviceList[69].State.PrintConstants()
     for X in range(0,10):
         MM.RunScripts()
+        if MM.Networks[0].DeviceList[69].Fields["Error"].Value == 1:
+            continue
         MM.Networks[0].DeviceList[69].State.PrintRegisters()
