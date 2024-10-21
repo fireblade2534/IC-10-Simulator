@@ -9,6 +9,7 @@
   "ceil": { "Function": "Instruction_Ceil", "Args": ["Register","Register|Number|Constant|Hash"] },
   "floor": { "Function": "Instruction_Floor", "Args": ["Register","Register|Number|Constant|Hash"] },
   "exp": { "Function": "Instruction_Exp", "Args": ["Register","Register|Number|Constant|Hash","Register|Number|Constant|Hash"] },
+  "yield":{"Function": "Instruction_Yield", "Args": [] },
   "j": { "Function": "Instruction_Jump", "Args": ["Number|Register|Constant|Hash"] },
   "jal": { "Function": "Instruction_JumpAL", "Args": ["Number|Register|Constant|Hash"] },
   "jr": { "Function": "Instruction_JumpR", "Args": ["Number|Register|Constant|Hash"] }

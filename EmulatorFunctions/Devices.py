@@ -227,6 +227,9 @@ class CodeRunner:
         if self.CheckError(Index1,Value1,Value2):return
         self.Registers[Index1]=Value1 ** Value2
 
+    def Instruction_Yield(self,*args):
+        return
+
     def Instruction_Jump(self,*args):
         Line=self.GetArgValue(args[1])
         if self.CheckError(Line):return

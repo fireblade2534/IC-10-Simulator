@@ -1,2 +1,5 @@
-move r10 50
-define Bob r10
+move r0 1
+move r1 2
+move r2 5
+yield
+move rrrr0 56
