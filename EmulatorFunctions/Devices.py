@@ -84,6 +84,8 @@ class CodeRunner:
     def GetArgIndex(self,Value):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if Value in self.Constants:
+            Log.Warning("You cannot change a constant value",Caller=f"Script line {self.LineNumber}")
+            self.Parent.Fields["Error"].Value=1
             return None
         
         if Value in self.RegisterAliases:
@@ -102,7 +104,8 @@ class CodeRunner:
                 return f"r{RegisterIndex}"
             except:
                 pass
-        
+        Log.Warning("Unknown value",Caller=f"Script line {self.LineNumber}")
+        self.Parent.Fields["Error"].Value=1
         return None
 
     def GetArgValue(self,Value):
@@ -132,7 +135,10 @@ class CodeRunner:
         try:
             return int(Value)
         except:
-            return None
+            pass
+        Log.Warning("Failed to parse arg",Caller=f"Script line {self.LineNumber}")
+        self.Parent.Fields["Error"].Value=1
+        return None
 
     def Instruction_Define(self,*args):
         Value=int(args[2])
