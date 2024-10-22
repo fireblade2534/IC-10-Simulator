@@ -256,6 +256,7 @@ class CodeRunner:
         self.LineNumber+=Line - 1
 
     def Instruction_Branch(self,*args):
+        #Branch to line if device is not set and other ones like that
         pass
 
     def RunUpdate(self):
@@ -267,9 +268,9 @@ class CodeRunner:
             for _,A in self.FunctionMap.items():
                 if CurrentLine[0] in A["Alias"]:
                     CurrentFunction=A
-                    if len(CurrentLine) - 1 == len(CurrentFunction["Args"]):
+                    if len(CurrentLine) - 1 == CurrentFunction["Alias"][CurrentLine[0]]:
                         
-                        for X in range(0,len(CurrentFunction["Args"])):
+                        for X in range(0,len(CurrentLine) - 1):
                             if self.GetArgType(CurrentLine[X+1]) not in CurrentFunction["Args"][X].split("|"):
 
                                 Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.LineNumber}")
