@@ -6,6 +6,8 @@ import json
 import copy
 import math
 
+import re
+
 class CodeRunner:
     def __init__(self,Parent,FilePath="Functions.json"):
         self.FunctionMap=json.load(open(FilePath,"r"))
@@ -253,28 +255,32 @@ class CodeRunner:
         
         self.LineNumber+=Line - 1
 
+    def Instruction_Branch(self,*args):
+        pass
+
     def RunUpdate(self):
         if self.LineNumber >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
             return
         CurrentLine=self.Code[self.LineNumber].strip()
         if CurrentLine != "":
             CurrentLine=SplitNotStringSpaces(CurrentLine," ")
-            if CurrentLine[0] in self.FunctionMap:
+            for _,A in self.FunctionMap.items():
+                if CurrentLine[0] in A["Alias"]:
+                    CurrentFunction=A
+                    if len(CurrentLine) - 1 == len(CurrentFunction["Args"]):
+                        
+                        for X in range(0,len(CurrentFunction["Args"])):
+                            if self.GetArgType(CurrentLine[X+1]) not in CurrentFunction["Args"][X].split("|"):
 
-                CurrentFunction=self.FunctionMap[CurrentLine[0]]
-                if len(CurrentLine) - 1 == len(CurrentFunction["Args"]):
-                    
-                    for X in range(0,len(CurrentFunction["Args"])):
-                        if self.GetArgType(CurrentLine[X+1]) not in CurrentFunction["Args"][X].split("|"):
-
-                            Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.LineNumber}")
-                            self.Parent.Fields["Error"].Value=1
-                            break
+                                Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.LineNumber}")
+                                self.Parent.Fields["Error"].Value=1
+                                break
+                        else:
+                            self.FunctionMap[CurrentLine[0]]["Function"](*CurrentLine)
                     else:
-                        self.FunctionMap[CurrentLine[0]]["Function"](*CurrentLine)
-                else:
-                    Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.LineNumber}")
-                    self.Parent.Fields["Error"].Value=1
+                        Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.LineNumber}")
+                        self.Parent.Fields["Error"].Value=1
+                    break
             else:
                 Log.Warning(f"Unknown function {CurrentLine[0]}",Caller=f"Script line {self.LineNumber}")
                 self.Parent.Fields["Error"].Value=1

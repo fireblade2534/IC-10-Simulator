@@ -1,16 +1,84 @@
 {
-  "define": { "Function": "Instruction_Define", "Args": ["String", "Number|Hash"] },
-  "alias": { "Function": "Instruction_Alias", "Args": ["String", "Register|Device"] },
-  "move": { "Function": "Instruction_Move", "Args": ["Register", "Number|Constant|Register|Hash"] },
-  "add": { "Function": "Instruction_Add", "Args": ["Register","Register|Number|Constant|Hash", "Register|Number|Constant|Hash"] },
-  "sub": { "Function": "Instruction_Sub", "Args": ["Register","Register|Number|Constant|Hash", "Register|Number|Constant|Hash"] },
-  "mul": { "Function": "Instruction_Mul", "Args": ["Register","Register|Number|Constant|Hash", "Register|Number|Constant|Hash"] },
-  "abs": { "Function": "Instruction_Abs", "Args": ["Register","Register|Number|Constant|Hash"] },
-  "ceil": { "Function": "Instruction_Ceil", "Args": ["Register","Register|Number|Constant|Hash"] },
-  "floor": { "Function": "Instruction_Floor", "Args": ["Register","Register|Number|Constant|Hash"] },
-  "exp": { "Function": "Instruction_Exp", "Args": ["Register","Register|Number|Constant|Hash","Register|Number|Constant|Hash"] },
-  "yield":{"Function": "Instruction_Yield", "Args": [] },
-  "j": { "Function": "Instruction_Jump", "Args": ["Number|Register|Constant|Hash"] },
-  "jal": { "Function": "Instruction_JumpAL", "Args": ["Number|Register|Constant|Hash"] },
-  "jr": { "Function": "Instruction_JumpR", "Args": ["Number|Register|Constant|Hash"] }
+  "define": {
+    "Alias": ["define"],
+    "Function": "Instruction_Define",
+    "Args": ["String", "Number|Hash"]
+  },
+  "alias": {
+    "Alias": ["alias"],
+    "Function": "Instruction_Alias",
+    "Args": ["String", "Register|Device"]
+  },
+  "move": {
+    "Alias": ["move"],
+    "Function": "Instruction_Move",
+    "Args": ["Register", "Number|Constant|Register|Hash"]
+  },
+  "add": {
+    "Alias": ["add"],
+    "Function": "Instruction_Add",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "sub": {
+    "Alias": ["sub"],
+    "Function": "Instruction_Sub",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "mul": {
+    "Alias": ["mul"],
+    "Function": "Instruction_Mul",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "abs": {
+    "Alias": ["abs"],
+    "Function": "Instruction_Abs",
+    "Args": ["Register", "Register|Number|Constant|Hash"]
+  },
+  "ceil": {
+    "Alias": ["ceil"],
+    "Function": "Instruction_Ceil",
+    "Args": ["Register", "Register|Number|Constant|Hash"]
+  },
+  "floor": {
+    "Alias": ["floor"],
+    "Function": "Instruction_Floor",
+    "Args": ["Register", "Register|Number|Constant|Hash"]
+  },
+  "exp": {
+    "Alias": ["exp"],
+    "Function": "Instruction_Exp",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "yield": { "Alias": ["yield"], "Function": "Instruction_Yield", "Args": [] },
+  "j": {
+    "Alias": ["j"],
+    "Function": "Instruction_Jump",
+    "Args": ["Number|Register|Constant|Hash"]
+  },
+  "jal": {
+    "Alias": ["jal"],
+    "Function": "Instruction_JumpAL",
+    "Args": ["Number|Register|Constant|Hash"]
+  },
+  "jr": {
+    "Alias": ["jr"],
+    "Function": "Instruction_JumpR",
+    "Args": ["Number|Register|Constant|Hash"]
+  }
 }
