@@ -39,7 +39,6 @@ class CodeRunner:
                         Log.Warning("You cannot declare two lables with the same name",Caller=f"Script line {self.LineNumber}")
                         self.Parent.Fields["Error"].Value=1
                     self.Code[X]=""
-        print(self.Code)
     def PrintRegisters(self):
         Output=["\n+------------+-------+\n|Registers   |       |"]
         for X,Y in self.Registers.items():
@@ -257,7 +256,21 @@ class CodeRunner:
 
     def Instruction_Branch(self,*args):
         #Branch to line if device is not set and other ones like that
-        pass
+        FunctionName=args[0]
+        if FunctionName.endswith("al"):
+            StoreNextLine=True
+            FunctionName=FunctionName[:-2]
+        else:
+            StoreNextLine=False
+
+        if FunctionName.startswith("br"):
+            Relative=True
+            FunctionName=FunctionName[2:]
+        else:
+            Relative=False
+            FunctionName=FunctionName[1:]
+        print(FunctionName)
+        
 
     def RunUpdate(self):
         if self.LineNumber >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
@@ -265,9 +278,8 @@ class CodeRunner:
         CurrentLine=self.Code[self.LineNumber].strip()
         if CurrentLine != "":
             CurrentLine=SplitNotStringSpaces(CurrentLine," ")
-            for _,A in self.FunctionMap.items():
-                if CurrentLine[0] in A["Alias"]:
-                    CurrentFunction=A
+            for CurrentIndex,CurrentFunction in self.FunctionMap.items():
+                if CurrentLine[0] in CurrentFunction["Alias"]:
                     if len(CurrentLine) - 1 == CurrentFunction["Alias"][CurrentLine[0]]:
                         
                         for X in range(0,len(CurrentLine) - 1):
@@ -277,7 +289,7 @@ class CodeRunner:
                                 self.Parent.Fields["Error"].Value=1
                                 break
                         else:
-                            self.FunctionMap[CurrentLine[0]]["Function"](*CurrentLine)
+                            self.FunctionMap[CurrentIndex]["Function"](*CurrentLine)
                     else:
                         Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.LineNumber}")
                         self.Parent.Fields["Error"].Value=1
@@ -351,7 +363,6 @@ class DeviceMaker:
             Output["Fields"][X]=Field(Y["Value"],Y["Read"],Y["Write"])
 
         Property=Output["Properties"]
-
         return Device(DeviceType,PrefabHash,DeviceName,ReferenceId,Output["Fields"],Output["Pins"],Output["Slots"],Output["Variables"],Property["RunCode"],Property["Stack"]["Enabled"],Property["Stack"]["Length"],Output["Variables"]["Code"])
     
     

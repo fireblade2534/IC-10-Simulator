@@ -1,5 +1,3 @@
-move r0 1
-move r1 2 #This line doe stuff
-move r2 5 #This lone does #more stuff xD
-yield
-move rrrr0 56
+beqzal 10 3
+
+move r2 51
