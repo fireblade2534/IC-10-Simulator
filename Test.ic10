@@ -1,4 +1,2 @@
-move r1 50
-beqal r1 50 3
-move r2 10
-move r3 20
+jr 100
+move r1 100

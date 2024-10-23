@@ -13,3 +13,11 @@ alias Bob r1
 
 define Bob 3
 ```
+
+ - Check if this errors or if it just continues on:
+```
+div r2 0 0
+
+jr -5
+move r1 35
+```

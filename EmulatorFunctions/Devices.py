@@ -310,7 +310,7 @@ class CodeRunner:
             return
 
         NewLineNumber=self.LineNumber + Line - 1
-        if NewLineNumber >= len(self.Code) - 1:
+        if NewLineNumber >= len(self.Code) - 1 or NewLineNumber < 0:
             NewLineNumber=self.LineNumber - 1
         self.LineNumber=NewLineNumber
 
