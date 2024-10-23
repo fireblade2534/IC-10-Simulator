@@ -270,14 +270,58 @@ class CodeRunner:
             Relative=False
             FunctionName=FunctionName[1:]
         
+        Values=[self.GetArgValue(X) for X in args[1:]]
+        if self.Parent.Fields["Error"].Value == 1:return
+
         Matched=False
         if FunctionName == "eq":
-            Value1=self.GetArgValue(args[1])
-            Value2=self.GetArgValue(args[2])
-            JumpLine=self.GetArgValue(args[3])
-            if self.Parent.Fields["Error"].Value == 1:return
-            Matched=Value1 == Value2
+            JumpLine=Values[2]
+            Matched=Values[0] == Values[1]
+
+        elif FunctionName == "eqz":
+            JumpLine=Values[1]
+            Matched=Values[0] == 0
+
+        elif FunctionName == "ge":
+            JumpLine=Values[2]
+            Matched=Values[0] >= Values[1]
+
+        elif FunctionName == "gez":
+            JumpLine=Values[1]
+            Matched=Values[0] >= 0
+
+        elif FunctionName == "gt":
+            JumpLine=Values[2]
+            Matched=Values[0] > Values[1]
+
+        elif FunctionName == "gtz":
+            JumpLine=Values[1]
+            Matched=Values[0] > 0
+
+        elif FunctionName == "le":
+            JumpLine=Values[2]
+            Matched=Values[0] <= Values[1]
+
+        elif FunctionName == "lez":
+            JumpLine=Values[1]
+            Matched=Values[0] <= 0
+
+        elif FunctionName == "lt":
+            JumpLine=Values[2]
+            Matched=Values[0] < Values[1]
         
+        elif FunctionName == "ltz":
+            JumpLine=Values[1]
+            Matched=Values[0] >= 0
+
+        elif FunctionName == "ne":
+            JumpLine=Values[2]
+            Matched=Values[0] != Values[1]
+        
+        elif FunctionName == "nez":
+            JumpLine=Values[1]
+            Matched=Values[0] != 0
+
         if Matched == True:
             if StoreNextLine == True:
                 self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
@@ -287,7 +331,7 @@ class CodeRunner:
             else:
                 self.LineNumber=JumpLine - 1
 
-        print(FunctionName)
+        
         
 
     def RunUpdate(self):
