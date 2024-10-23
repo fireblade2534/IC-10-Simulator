@@ -269,6 +269,24 @@ class CodeRunner:
         else:
             Relative=False
             FunctionName=FunctionName[1:]
+        
+        Matched=False
+        if FunctionName == "eq":
+            Value1=self.GetArgValue(args[1])
+            Value2=self.GetArgValue(args[2])
+            JumpLine=self.GetArgValue(args[3])
+            if self.Parent.Fields["Error"].Value == 1:return
+            Matched=Value1 == Value2
+        
+        if Matched == True:
+            if StoreNextLine == True:
+                self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
+
+            if Relative == True:
+                self.LineNumber+=JumpLine - 1
+            else:
+                self.LineNumber=JumpLine - 1
+
         print(FunctionName)
         
 

@@ -1,3 +1,5 @@
-beqzal 10 3
-
-move r2 51
+move r1 50
+beqal r1 50 3
+move r2 10
+move r3 20
+j ra
