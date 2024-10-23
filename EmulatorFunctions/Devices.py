@@ -99,10 +99,15 @@ class CodeRunner:
             try:
                 RegisterIndex=int(Value.replace("r",""))
                 for X in range(Value.count("r") - 1):
-                    if RegisterIndex >= 0 and RegisterIndex < 18:
-                        RegisterIndex=self.Registers[f"r{RegisterIndex}"]
+                    if RegisterIndex != "NaN":
+                        if RegisterIndex >= 0 and RegisterIndex < 18:
+                            RegisterIndex=self.Registers[f"r{RegisterIndex}"]
+                        else:
+                            Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                            self.Parent.Fields["Error"].Value=1
+                            return None
                     else:
-                        Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                        Log.Warning("Indirect refrences values have to be bettween 0 and 17 not NaN",Caller=f"Script line {self.LineNumber}")
                         self.Parent.Fields["Error"].Value=1
                         return None
                 return f"r{RegisterIndex}"
@@ -120,10 +125,15 @@ class CodeRunner:
             try:
                 RegisterIndex=int(Value.replace("r",""))
                 for X in range(Value.count("r") - 1):
-                    if RegisterIndex >= 0 and RegisterIndex < 18:
-                        RegisterIndex=self.Registers[f"r{RegisterIndex}"]
+                    if RegisterIndex != "NaN":
+                        if RegisterIndex >= 0 and RegisterIndex < 18:
+                            RegisterIndex=self.Registers[f"r{RegisterIndex}"]
+                        else:
+                            Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                            self.Parent.Fields["Error"].Value=1
+                            return None
                     else:
-                        Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                        Log.Warning("Indirect refrences values have to be bettween 0 and 17 not NaN",Caller=f"Script line {self.LineNumber}")
                         self.Parent.Fields["Error"].Value=1
                         return None
                 return self.Registers[f"r{RegisterIndex}"]
@@ -177,6 +187,10 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN" or Value2 == "NaN":
+            self.Registers[Index1]="NaN"
+            return 
 
         self.Registers[Index1]=Value1 + Value2
 
