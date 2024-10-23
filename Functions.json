@@ -61,7 +61,6 @@
     "Function": "Instruction_Exp",
     "Args": [
       "Register",
-      "Register|Number|Constant|Hash",
       "Register|Number|Constant|Hash"
     ]
   },

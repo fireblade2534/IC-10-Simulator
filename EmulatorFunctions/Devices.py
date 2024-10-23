@@ -200,6 +200,10 @@ class CodeRunner:
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
+        if Value1 == "NaN" or Value2 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+
         self.Registers[Index1]=Value1 - Value2
 
     def Instruction_Mul(self,*args):
@@ -207,6 +211,10 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN" or Value2 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
 
         self.Registers[Index1]=Value1 * Value2
 
@@ -216,12 +224,20 @@ class CodeRunner:
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
+        if Value1 == "NaN" or Value2 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+
         self.Registers[Index1]=Value1 / Value2
         
     def Instruction_Abs(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
 
         self.Registers[Index1]=abs(Value1)
     
@@ -230,6 +246,10 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+
         self.Registers[Index1]=math.ceil(Value1)
 
     def Instruction_Floor(self,*args):
@@ -237,15 +257,22 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+
         self.Registers[Index1]=math.floor(Value1)
 
     def Instruction_Exp(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
-        Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        self.Registers[Index1]=Value1 ** Value2
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+
+        self.Registers[Index1]=math.e ** Value1
 
     def Instruction_Yield(self,*args):
         return
@@ -253,11 +280,22 @@ class CodeRunner:
     def Instruction_Jump(self,*args):
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
+
+        if Line == "NaN":
+            Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.LineNumber}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
         self.LineNumber=Line - 1
 
     def Instruction_JumpAL(self,*args):
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
+
+        if Line == "NaN":
+            Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.LineNumber}")
+            self.Parent.Fields["Error"].Value=1
+            return
 
         self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
         self.LineNumber=Line - 1
@@ -266,7 +304,15 @@ class CodeRunner:
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
         
-        self.LineNumber+=Line - 1
+        if Line == "NaN":
+            Log.Warning("You cannot jump relative to a NaN line",Caller=f"Script line {self.LineNumber}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        NewLineNumber=self.LineNumber + Line - 1
+        if NewLineNumber >= len(self.Code) - 1:
+            NewLineNumber=self.LineNumber - 1
+        self.LineNumber=NewLineNumber
 
     def Instruction_Branch(self,*args):
         #Branch to line if device is not set and other ones like that
