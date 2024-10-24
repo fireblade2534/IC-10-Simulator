@@ -158,11 +158,14 @@ class CodeRunner:
 
     def Instruction_Define(self,*args):
         Value=int(args[2])
-        if self.Parent.Fields["Error"].Value == 1:return
-        self.Constants[args[1]]=Value
-        if args[1] in self.RegisterAliases:
-            del self.RegisterAliases[args[1]]
+        if args[1] not in self.Constants:
+            self.Constants[args[1]]=Value
+            if args[1] in self.RegisterAliases:
+                del self.RegisterAliases[args[1]]
             #Check wether it should throw an error or not
+        else:
+            Log.Warning("You cannot change a constant value",Caller=f"Script line {self.LineNumber}")
+            if self.Parent.Fields["Error"].Value == 1:return
             
     def Instruction_Move(self,*args):
         Index1=self.GetArgIndex(args[1])
@@ -173,10 +176,14 @@ class CodeRunner:
     def Instruction_Alias(self,*args):
         if self.GetArgType(args[1]) == "String":
             if args[2][0] == "r":
-                self.RegisterAliases[args[1]]=args[2]
-                if args[1] in self.Constants:
-                    del self.Constants[args[1]]
-                    #Check wether it should throw an error or not
+                if args[1] not in self.RegisterAliases:
+                    self.RegisterAliases[args[1]]=args[2]
+                    if args[1] in self.Constants:
+                        del self.Constants[args[1]]
+                        #Check wether it should throw an error or not
+                else:
+                    Log.Warning("Cannot overwrite an alias",Caller=f"Script line {self.LineNumber}")
+                    if self.Parent.Fields["Error"].Value == 1:return
             elif args[2][0] == "d":
                 pass #ADD DEVICE SUPPORT
             else:
