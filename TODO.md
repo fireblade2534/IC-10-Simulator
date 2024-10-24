@@ -21,3 +21,6 @@ div r2 0 0
 jr -5
 move r1 35
 ```
+
+ - Find out what happens when you put NaN into all combos of arguments in the branch instructions
+ 

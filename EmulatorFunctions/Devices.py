@@ -8,6 +8,8 @@ import math
 
 import re
 
+
+float.epsilon=pow(2,-23)
 class CodeRunner:
     def __init__(self,Parent,FilePath="Functions.json"):
         self.FunctionMap=json.load(open(FilePath,"r"))
@@ -310,7 +312,9 @@ class CodeRunner:
             return
 
         NewLineNumber=self.LineNumber + Line - 1
-        if NewLineNumber >= len(self.Code) - 1 or NewLineNumber < 0:
+        if NewLineNumber < 0:
+            NewLineNumber=self.LineNumber
+        if NewLineNumber >= len(self.Code) - 1:
             NewLineNumber=self.LineNumber - 1
         self.LineNumber=NewLineNumber
 
@@ -382,6 +386,39 @@ class CodeRunner:
             JumpLine=Values[1]
             Matched=Values[0] != 0
 
+        elif FunctionName == "nan":
+            JumpLine=Values[1]
+            Matched=Values[0] == "NaN"
+
+        elif FunctionName == "dns":
+            #TODO
+            pass
+        
+        elif FunctionName == "dse":
+            #TODO
+            pass
+
+        elif FunctionName == "ap":
+            JumpLine=Values[3]
+            Matched=abs(Values[0] - Values[1]) <= max(Values[2] * max(abs(Values[0]), abs(Values[1])),float.epsilon * 8)
+
+        elif FunctionName == "apz":
+            JumpLine=Values[2]
+            Matched=abs(Values[0]) <= max(Values[1] * abs(Values[0]), float.epsilon * 8)
+
+        elif FunctionName == "na":
+            JumpLine=Values[3]
+            Matched=abs(Values[0] - Values[1]) > max(Values[2] * max(abs(Values[0]), abs(Values[1])), float.epsilon * 8)
+            
+
+        elif FunctionName == "naz":
+            JumpLine=Values[2]
+            Matched=abs(Values[0]) > max (Values[1] * abs(Values[0]), float.epsilon * 8)
+        else:
+            Log.Warning("Unknown branch type",Caller=f"Script line {self.LineNumber}")
+            self.Parent.Fields["Error"].Value=1
+            return 
+        
         if Matched == True:
             if StoreNextLine == True:
                 self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
