@@ -1,0 +1,12 @@
+move r1 2
+blt 1 r1 Branch
+
+
+
+Branch:
+    bgt r1 1 NextBranch
+
+
+
+NextBranch:
+    move r3 5

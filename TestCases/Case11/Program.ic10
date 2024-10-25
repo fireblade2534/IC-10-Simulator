@@ -1,0 +1,13 @@
+move r1 2
+bltal 1 r1 Branch
+bgtal r1 -3 NextBranch
+move r8 9
+
+Branch:
+    move r5 69
+    j ra
+
+
+NextBranch:
+    move r3 5
+    j ra

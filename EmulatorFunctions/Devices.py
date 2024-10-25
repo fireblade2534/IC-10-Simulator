@@ -464,7 +464,7 @@ class CodeRunner:
                         else:
                             self.FunctionMap[CurrentIndex]["Function"](*CurrentLine)
                     else:
-                        Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+                        Log.Warning(f"{CurrentLine[0]} requires {CurrentFunction['Alias'][CurrentLine[0]]} args",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                         self.Parent.Fields["Error"].Value=1
                     break
             else:

@@ -1,6 +1,6 @@
 move r1 69
 bneal 2 r1 NextBranch
-bnezal r1 1 Branch
+bnezal r1 Branch
 move r8 9
 
 Branch:
