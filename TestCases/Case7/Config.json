@@ -1,12 +1,12 @@
 {
-  "Name": "Indirect Reference Test 1",
-  "LoopLines":3,
+  "Name": "Jump Test 1",
+  "LoopLines":4,
   "Expected": {
     "Stack": "None",
     "Fields": {
       "Activate": 0,
       "Error": 0,
-      "LineNumber": 3,
+      "LineNumber": 5,
       "On": 1,
       "Power": 1,
       "RequiredPower": 0,
@@ -15,8 +15,8 @@
     "Registery": {
       "r0": 0,
       "r1": 2,
-      "r2": 3,
-      "r3": 69.3,
+      "r2": 0,
+      "r3": 4,
       "r4": 0,
       "r5": 0,
       "r6": 0,
@@ -33,6 +33,6 @@
       "r17": 0
     },
     "Alias": { "sp": "r16", "ra": "r17"},
-    "Constant": {}
+    "Constant": {"Test":3}
   }
 }

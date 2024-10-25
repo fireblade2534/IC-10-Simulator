@@ -60,10 +60,20 @@ def MainTest():
                 if B != X["Expected"]["Registery"][A]:
                     Case.FailTest(f'Registery "{A}" expected {X["Expected"]["Registery"][A]} got {B}')
             
+            #Account for extra constants
+            for A in X["Expected"]["Constant"]:
+                if A not in MM.Networks[0].DeviceList[69].State.Constants:
+                    Case.FailTest(f'Constant "{A}" not declared')
+
             for A,B in MM.Networks[0].DeviceList[69].State.Constants.items():
                 if B != X["Expected"]["Constant"][A]:
                     Case.FailTest(f'Constant "{A}" expected {X["Expected"]["Constant"][A]} got {B}')
             
+            for A in X["Expected"]["Alias"]:
+                if A not in MM.Networks[0].DeviceList[69].State.RegisterAliases:
+                    Case.FailTest(f'Alias "{A}" not declared')
+
+            #Account for not defining alias in program or extra aliases
             for A,B in MM.Networks[0].DeviceList[69].State.RegisterAliases.items():
                 if B != X["Expected"]["Alias"][A]:
                     Case.FailTest(f'Alias "{A}" expected {X["Expected"]["Alias"][A]} got {B}')
@@ -79,12 +89,12 @@ def MainTest():
     if NumberPassed != Total:
         Log.Info("")
         Log.Info("Tests Info:")
-        for X in Outputs[::-1]:
+        for X in Outputs:
             if X.TestPassed() == False:
                 Log.Info(f"{X.TestIndex} - {X.Name}:")
                 for Y in X.Reason:
                     Log.Info(Y)
-            Log.Info("")
+                Log.Info("")
                 
 if __name__ == "__main__":
     MainTest()

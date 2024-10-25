@@ -1,0 +1,5 @@
+move r1 2
+j Test
+move r2 3
+Test:
+move r3 4

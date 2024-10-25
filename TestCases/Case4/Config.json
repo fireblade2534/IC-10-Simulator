@@ -32,7 +32,7 @@
       "r16": 0,
       "r17": 0
     },
-    "Alias": { "sp": "r16", "ra": "r17","Bob":"r1"},
+    "Alias": { "sp": "r16", "ra": "r17"},
     "Constant": {"Test":5}
   }
 }
