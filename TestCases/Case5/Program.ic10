@@ -1,0 +1,3 @@
+abs r0 -69
+floor r1 87.5
+ceil r2 87.5

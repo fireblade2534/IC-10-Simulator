@@ -82,7 +82,11 @@ class CodeRunner:
             int(Value)
             return "Number"
         except:
-            pass
+            try:
+                float(Value)
+                return "Number"
+            except:
+                pass
         
         return "String"
 
@@ -150,7 +154,10 @@ class CodeRunner:
         try:
             return int(Value)
         except:
-            pass
+            try:
+                return float(Value)
+            except:
+                pass
         Log.Warning("Failed to parse arg",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
         self.Parent.Fields["Error"].Value=1
         return None

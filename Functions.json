@@ -41,6 +41,15 @@
       "Register|Number|Constant|Hash"
     ]
   },
+  "div": {
+    "Alias": { "div": 3 },
+    "Function": "Instruction_Div",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash",
+      "Register|Number|Constant|Hash"
+    ]
+  },
   "abs": {
     "Alias": { "abs": 2 },
     "Function": "Instruction_Abs",

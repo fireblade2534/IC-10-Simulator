@@ -1,0 +1,5 @@
+define Test 5
+add r0 Test 5
+sub r1 Test 4
+mul r2 r0 3
+div r3 r2 4

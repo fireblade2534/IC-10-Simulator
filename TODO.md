@@ -24,3 +24,9 @@ move r1 35
 
  - Find out what happens when you put NaN into all combos of arguments in the branch instructions
  
+ - Find out if it errors when you do a float in an inderect reference:
+```
+move r1 2
+move r2 3.2
+move rrr1 69.3
+```
