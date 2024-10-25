@@ -9,7 +9,7 @@ import math
 import re
 
 
-float.epsilon=pow(2,-23)
+epsilon=pow(2,-23)
 class CodeRunner:
     def __init__(self,Parent,FilePath="Functions.json"):
         self.FunctionMap=json.load(open(FilePath,"r"))
@@ -22,7 +22,6 @@ class CodeRunner:
         self.Stack=[0 for X in range(512)]
         self.Constants={}
 
-        self.LineNumber=0
         self.DevicePins=[]
 
         self.ParseCode()
@@ -38,7 +37,7 @@ class CodeRunner:
                     if YTemp not in self.Constants:
                         self.Constants[YTemp[:-1]]=X
                     else:
-                        Log.Warning("You cannot declare two lables with the same name",Caller=f"Script line {self.LineNumber}")
+                        Log.Warning("You cannot declare two lables with the same name",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                         self.Parent.Fields["Error"].Value=1
                     self.Code[X]=""
     def PrintRegisters(self):
@@ -90,7 +89,7 @@ class CodeRunner:
     def GetArgIndex(self,Value):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if Value in self.Constants:
-            Log.Warning("You cannot change a constant value",Caller=f"Script line {self.LineNumber}")
+            Log.Warning("You cannot change a constant value",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value} ")
             self.Parent.Fields["Error"].Value=1
             return None
         
@@ -105,17 +104,17 @@ class CodeRunner:
                         if RegisterIndex >= 0 and RegisterIndex < 18:
                             RegisterIndex=self.Registers[f"r{RegisterIndex}"]
                         else:
-                            Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                            Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                             self.Parent.Fields["Error"].Value=1
                             return None
                     else:
-                        Log.Warning("Indirect refrences values have to be bettween 0 and 17 not NaN",Caller=f"Script line {self.LineNumber}")
+                        Log.Warning("Indirect refrences values have to be bettween 0 and 17 not NaN",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                         self.Parent.Fields["Error"].Value=1
                         return None
                 return f"r{RegisterIndex}"
             except:
                 pass
-        Log.Warning("Unknown value",Caller=f"Script line {self.LineNumber}")
+        Log.Warning("Unknown value",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
         self.Parent.Fields["Error"].Value=1
         return None
 
@@ -131,11 +130,11 @@ class CodeRunner:
                         if RegisterIndex >= 0 and RegisterIndex < 18:
                             RegisterIndex=self.Registers[f"r{RegisterIndex}"]
                         else:
-                            Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.LineNumber}")
+                            Log.Warning("Indirect refrences values have to be bettween 0 and 17",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                             self.Parent.Fields["Error"].Value=1
                             return None
                     else:
-                        Log.Warning("Indirect refrences values have to be bettween 0 and 17 not NaN",Caller=f"Script line {self.LineNumber}")
+                        Log.Warning("Indirect refrences values have to be bettween 0 and 17 not NaN",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                         self.Parent.Fields["Error"].Value=1
                         return None
                 return self.Registers[f"r{RegisterIndex}"]
@@ -152,7 +151,7 @@ class CodeRunner:
             return int(Value)
         except:
             pass
-        Log.Warning("Failed to parse arg",Caller=f"Script line {self.LineNumber}")
+        Log.Warning("Failed to parse arg",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
         self.Parent.Fields["Error"].Value=1
         return None
 
@@ -164,7 +163,7 @@ class CodeRunner:
                 del self.RegisterAliases[args[1]]
             #Check wether it should throw an error or not
         else:
-            Log.Warning("You cannot change a constant value",Caller=f"Script line {self.LineNumber}")
+            Log.Warning("You cannot change a constant value",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             if self.Parent.Fields["Error"].Value == 1:return
             
     def Instruction_Move(self,*args):
@@ -182,14 +181,14 @@ class CodeRunner:
                         del self.Constants[args[1]]
                         #Check wether it should throw an error or not
                 else:
-                    Log.Warning("Cannot overwrite an alias",Caller=f"Script line {self.LineNumber}")
+                    Log.Warning("Cannot overwrite an alias",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                     if self.Parent.Fields["Error"].Value == 1:return
             elif args[2][0] == "d":
                 pass #ADD DEVICE SUPPORT
             else:
                 Log.Error("Unkown alias type not caught by update")
         else:
-            Log.Warning("You cannot set a register alias to a device name or a register",Caller=f"Script line {self.LineNumber}")
+            Log.Warning("You cannot set a register alias to a device name or a register",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
     def Instruction_Add(self,*args):
         Index1=self.GetArgIndex(args[1])
@@ -291,41 +290,42 @@ class CodeRunner:
         if self.Parent.Fields["Error"].Value == 1:return
 
         if Line == "NaN":
-            Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.LineNumber}")
+            Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
 
-        self.LineNumber=Line - 1
+        self.Parent.Fields['LineNumber'].Value=Line - 1
 
     def Instruction_JumpAL(self,*args):
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
 
         if Line == "NaN":
-            Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.LineNumber}")
+            Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
 
-        self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
-        self.LineNumber=Line - 1
+        self.Registers[self.RegisterAliases["ra"]]=self.Parent.Fields['LineNumber'].Value + 1
+        self.Parent.Fields['LineNumber'].Value=Line - 1
 
     def Instruction_JumpR(self,*args):
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
         
         if Line == "NaN":
-            Log.Warning("You cannot jump relative to a NaN line",Caller=f"Script line {self.LineNumber}")
+            Log.Warning("You cannot jump relative to a NaN line",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
 
-        NewLineNumber=self.LineNumber + Line - 1
+        NewLineNumber=self.Parent.Fields['LineNumber'].Value + Line - 1
         if NewLineNumber < 0:
-            NewLineNumber=self.LineNumber
+            NewLineNumber=self.Parent.Fields['LineNumber'].Value
         if NewLineNumber >= len(self.Code) - 1:
-            NewLineNumber=self.LineNumber - 1
-        self.LineNumber=NewLineNumber
+            NewLineNumber=self.Parent.Fields['LineNumber'].Value - 1
+        self.Parent.Fields['LineNumber'].Value=NewLineNumber
 
     def Instruction_Branch(self,*args):
+        global epsilon
         #Branch to line if device is not set and other ones like that
         FunctionName=args[0]
         if FunctionName.endswith("al"):
@@ -407,41 +407,41 @@ class CodeRunner:
 
         elif FunctionName == "ap":
             JumpLine=Values[3]
-            Matched=abs(Values[0] - Values[1]) <= max(Values[2] * max(abs(Values[0]), abs(Values[1])),float.epsilon * 8)
+            Matched=abs(Values[0] - Values[1]) <= max(Values[2] * max(abs(Values[0]), abs(Values[1])),epsilon * 8)
 
         elif FunctionName == "apz":
             JumpLine=Values[2]
-            Matched=abs(Values[0]) <= max(Values[1] * abs(Values[0]), float.epsilon * 8)
+            Matched=abs(Values[0]) <= max(Values[1] * abs(Values[0]), epsilon * 8)
 
         elif FunctionName == "na":
             JumpLine=Values[3]
-            Matched=abs(Values[0] - Values[1]) > max(Values[2] * max(abs(Values[0]), abs(Values[1])), float.epsilon * 8)
+            Matched=abs(Values[0] - Values[1]) > max(Values[2] * max(abs(Values[0]), abs(Values[1])), epsilon * 8)
             
 
         elif FunctionName == "naz":
             JumpLine=Values[2]
-            Matched=abs(Values[0]) > max (Values[1] * abs(Values[0]), float.epsilon * 8)
+            Matched=abs(Values[0]) > max (Values[1] * abs(Values[0]), epsilon * 8)
         else:
-            Log.Warning("Unknown branch type",Caller=f"Script line {self.LineNumber}")
+            Log.Warning("Unknown branch type",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return 
         
         if Matched == True:
             if StoreNextLine == True:
-                self.Registers[self.RegisterAliases["ra"]]=self.LineNumber + 1
+                self.Registers[self.RegisterAliases["ra"]]=self.Parent.Fields['LineNumber'].Value + 1
 
             if Relative == True:
-                self.LineNumber+=JumpLine - 1
+                self.Parent.Fields['LineNumber'].Value+=JumpLine - 1
             else:
-                self.LineNumber=JumpLine - 1
+                self.Parent.Fields['LineNumber'].Value=JumpLine - 1
 
         
         
 
     def RunUpdate(self):
-        if self.LineNumber >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
+        if self.Parent.Fields['LineNumber'].Value >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
             return
-        CurrentLine=self.Code[self.LineNumber].strip()
+        CurrentLine=self.Code[self.Parent.Fields['LineNumber'].Value].strip()
         if CurrentLine != "":
             CurrentLine=SplitNotStringSpaces(CurrentLine," ")
             for CurrentIndex,CurrentFunction in self.FunctionMap.items():
@@ -451,20 +451,20 @@ class CodeRunner:
                         for X in range(0,len(CurrentLine) - 1):
                             if self.GetArgType(CurrentLine[X+1]) not in CurrentFunction["Args"][X].split("|"):
 
-                                Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.LineNumber}")
+                                Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                                 self.Parent.Fields["Error"].Value=1
                                 break
                         else:
                             self.FunctionMap[CurrentIndex]["Function"](*CurrentLine)
                     else:
-                        Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.LineNumber}")
+                        Log.Warning(f"{CurrentLine[0]} requires {len(CurrentFunction['Args'])} args",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                         self.Parent.Fields["Error"].Value=1
                     break
             else:
-                Log.Warning(f"Unknown function {CurrentLine[0]}",Caller=f"Script line {self.LineNumber}")
+                Log.Warning(f"Unknown function {CurrentLine[0]}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                 self.Parent.Fields["Error"].Value=1
 
-        self.LineNumber+=1
+        self.Parent.Fields['LineNumber'].Value+=1
         #if self.LineNumber >= len(self.Code):
         #    self.LineNumber=0
 class Device:

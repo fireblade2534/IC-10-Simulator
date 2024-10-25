@@ -1,0 +1,3 @@
+alias Bob r1 #Do stuff yay
+move Bob 30 #Cool lol #Testing
+move r2 r1 ####This is a good test of a test
