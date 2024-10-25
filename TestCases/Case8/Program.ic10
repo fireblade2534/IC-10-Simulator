@@ -1,5 +1,4 @@
 move r1 2
-jal 3
+jr 2
 move r2 3
 move r3 4
-j ra
