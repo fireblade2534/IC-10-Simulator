@@ -2,7 +2,7 @@
   "Name": "Constant Test 1",
   "LoopLines":2,
   "Expected": {
-    "Stack": "None",
+    "Stack": {},
     "Fields": {
       "Activate": 0,
       "Error": 0,

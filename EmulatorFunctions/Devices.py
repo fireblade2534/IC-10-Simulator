@@ -1,3 +1,4 @@
+from ast import Index
 from UtilityFunctions.Error import *
 from UtilityFunctions.Utility import *
 from Main import Log
@@ -10,6 +11,7 @@ import re
 
 
 epsilon=pow(2,-23)
+
 class CodeRunner:
     def __init__(self,Parent,FilePath="Functions.json"):
         self.FunctionMap=json.load(open(FilePath,"r"))
@@ -19,12 +21,15 @@ class CodeRunner:
         self.Code=self.Parent.Code.split("\n")
         self.Registers={f"r{X}":0 for X in range(0,18)}
         self.RegisterAliases={"sp":"r16","ra":"r17"}
-        self.Stack=[0 for X in range(512)]
+        if self.Parent.StackEnabled == True:
+            self.Stack=[0 for X in range(self.Parent.StackLength)]
         self.Constants={}
 
-        self.DevicePins=[]
+        self.DevicePins={}
 
         self.ParseCode()
+
+        self.HighestSP=0
 
     def ParseCode(self):
         for X,Y in enumerate(self.Code):
@@ -50,6 +55,12 @@ class CodeRunner:
         Output=["\n+------------+-------+\n|Constants   |       |"]
         for X,Y in self.Constants.items():
             Output.append(f"|{X:<12}|{Y:<7}|")
+        Log.Info("\n".join(Output)+"\n+------------+-------+") 
+
+    def PrintStack(self):
+        Output=["\n+------------+-------+\n|Stack       |       |"]
+        for X in range(self.HighestSP+1):
+            Output.append(f"|{X:<12}|{self.Stack[X]:<7}|")
         Log.Info("\n".join(Output)+"\n+------------+-------+") 
 
     def ScriptLength(self):
@@ -432,6 +443,56 @@ class CodeRunner:
         except:
             self.Registers[Index1]="NaN"
 
+    def Instruction_Peek(self,*args):
+        Index1=self.Registers[self.RegisterAliases["sp"]]
+        Index2=self.GetArgIndex(args[1])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Index1 == "NaN":
+            Log.Warning("Cannot peek at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        if Index1 >= 1 and Index1 <= self.Parent.StackLength:
+            self.Registers[Index2]=self.Stack[Index1 - 1]
+        else:
+            Log.Warning(f"Peek index must be greater then 0 and less then or equal to {self.Parent.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
+    def Instruction_Push(self,*args):
+        Index1=self.Registers[self.RegisterAliases["sp"]]
+        Value1=self.GetArgValue(args[1])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Index1 == "NaN":
+            Log.Warning("Cannot push at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        if Index1 >= 0 and Index1 < self.Parent.StackLength:
+            self.Stack[Index1]=Value1
+            self.Registers[self.RegisterAliases["sp"]]+=1
+        else:
+            Log.Warning(f"Push index must be greater then or euqal to 0 and less then {self.Parent.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
+    def Instruction_Pop(self,*args):
+        Index1=self.Registers[self.RegisterAliases["sp"]]
+        Index2=self.GetArgIndex(args[1])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Index1 == "NaN":
+            Log.Warning("Cannot pop at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        if Index1 > 0 and Index1 <= self.Parent.StackLength:
+            self.Registers[Index2]=self.Stack[Index1 - 1]
+            self.Registers[self.RegisterAliases["sp"]]-=1
+        else:
+            Log.Warning(f"Pop index must be greater then 0 and less then or equal to {self.Parent.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
     def Instruction_Yield(self,*args):
         return
 
@@ -613,7 +674,7 @@ class CodeRunner:
             else:
                 Log.Warning(f"Unknown function {CurrentLine[0]}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                 self.Parent.Fields["Error"].Value=1
-
+        self.HighestSP=max(self.HighestSP,self.Registers[self.RegisterAliases["sp"]])
         self.Parent.Fields['LineNumber'].Value+=1
         #if self.LineNumber >= len(self.Code):
         #    self.LineNumber=0

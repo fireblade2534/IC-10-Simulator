@@ -2,7 +2,7 @@
   "Name": "Operation Test 1",
   "LoopLines":5,
   "Expected": {
-    "Stack": "None",
+    "Stack": {},
     "Fields": {
       "Activate": 0,
       "Error": 0,

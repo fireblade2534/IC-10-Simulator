@@ -2,7 +2,7 @@
   "Name": "Branch Test 5",
   "LoopLines":10,
   "Expected": {
-    "Stack": "None",
+    "Stack": {},
     "Fields": {
       "Activate": 0,
       "Error": 0,

@@ -30,3 +30,9 @@ move r1 2
 move r2 3.2
 move rrr1 69.3
 ```
+ - Stack functions relating to other devices
+ - Load functions relating to other devices
+ - Set functions relating to other devices
+ - Branch instructions relating to other devices
+ - Aliases for devices
+ - 

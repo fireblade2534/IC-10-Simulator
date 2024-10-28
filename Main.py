@@ -29,3 +29,4 @@ if __name__ == "__main__":
         if MM.Networks[0].DeviceList[69].Fields["Error"].Value == 1:
             continue
         MM.Networks[0].DeviceList[69].State.PrintRegisters()
+    MM.Networks[0].DeviceList[69].State.PrintStack()

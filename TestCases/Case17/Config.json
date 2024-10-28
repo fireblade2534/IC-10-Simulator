@@ -2,7 +2,7 @@
   "Name": "Trig Functions Test 4",
   "LoopLines":7,
   "Expected": {
-    "Stack": "None",
+    "Stack": {},
     "Fields": {
       "Activate": 0,
       "Error": 0,

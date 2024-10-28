@@ -2,7 +2,7 @@
   "Name": "Jump Test 2",
   "LoopLines":3,
   "Expected": {
-    "Stack": "None",
+    "Stack": {},
     "Fields": {
       "Activate": 0,
       "Error": 0,
