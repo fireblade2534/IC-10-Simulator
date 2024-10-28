@@ -96,6 +96,14 @@
       "Register|Number|Constant|Hash"
     ]
   },
+  "sqrt": {
+    "Alias": { "sqrt": 2 },
+    "Function": "Instruction_Sqrt",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
   "yield": {
     "Alias": { "yield": 0 },
     "Function": "Instruction_Yield",
