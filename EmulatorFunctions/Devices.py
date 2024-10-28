@@ -330,6 +330,26 @@ class CodeRunner:
             return
         self.Registers[Index1]=math.sqrt(Value1)
 
+    def Instruction_Trunc(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        self.Registers[Index1]=math.trunc(Value1)
+
+    def Instruction_Acos(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        self.Registers[Index1]=math.acos(Value1)
+
     def Instruction_Yield(self,*args):
         return
 

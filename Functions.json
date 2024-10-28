@@ -104,6 +104,22 @@
       "Register|Number|Constant|Hash"
     ]
   },
+  "trunc": {
+    "Alias": { "trunc": 2 },
+    "Function": "Instruction_Trunc",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "acos": {
+    "Alias": { "trunc": 2 },
+    "Function": "Instruction_Acos",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
   "yield": {
     "Alias": { "yield": 0 },
     "Function": "Instruction_Yield",
