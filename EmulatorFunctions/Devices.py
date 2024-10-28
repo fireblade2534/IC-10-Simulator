@@ -5,7 +5,7 @@ from Main import Log
 import json
 import copy
 import math
-
+import random
 import re
 
 
@@ -288,6 +288,37 @@ class CodeRunner:
             return
 
         self.Registers[Index1]=math.e ** Value1
+
+    def Instruction_Log(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+
+        self.Registers[Index1]=math.log(Value1)
+
+    def Instruction_Rand(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        self.Registers[Index1]=random.random()
+
+    def Instruction_Round(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        Decimal=Value1 - math.floor(Value1)
+        if Decimal >= 0.5:
+            self.Registers[Index1]=math.ceil(Value1)
+        else:
+            self.Registers[Index1]=math.floor(Value1)
 
     def Instruction_Yield(self,*args):
         return

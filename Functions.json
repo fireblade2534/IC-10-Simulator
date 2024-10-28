@@ -73,6 +73,29 @@
       "Register|Number|Constant|Hash"
     ]
   },
+  "log": {
+    "Alias": { "log": 2 },
+    "Function": "Instruction_Log",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "rand": {
+    "Alias": { "rand": 1 },
+    "Function": "Instruction_Rand",
+    "Args": [
+      "Register"
+    ]
+  },
+  "round": {
+    "Alias": { "round": 2 },
+    "Function": "Instruction_Round",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
   "yield": {
     "Alias": { "yield": 0 },
     "Function": "Instruction_Yield",

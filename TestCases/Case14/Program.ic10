@@ -7,7 +7,6 @@ Branch:
     move r9 69
     j ra
 
-
 NextBranch:
     move r3 5
     j ra
