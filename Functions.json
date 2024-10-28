@@ -112,9 +112,58 @@
       "Register|Number|Constant|Hash"
     ]
   },
+  "asin": {
+    "Alias": { "asin": 2 },
+    "Function": "Instruction_Asin",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
   "acos": {
-    "Alias": { "trunc": 2 },
+    "Alias": { "acos": 2 },
     "Function": "Instruction_Acos",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "atan": {
+    "Alias": { "atan": 2 },
+    "Function": "Instruction_Atan",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "atan2": {
+    "Alias": { "atan2": 3 },
+    "Function": "Instruction_Atan2",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "sin": {
+    "Alias": { "sin": 2 },
+    "Function": "Instruction_Sin",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "cos": {
+    "Alias": { "cos": 2 },
+    "Function": "Instruction_Cos",
+    "Args": [
+      "Register",
+      "Register|Number|Constant|Hash"
+    ]
+  },
+  "tan": {
+    "Alias": { "tan": 2 },
+    "Function": "Instruction_Tan",
     "Args": [
       "Register",
       "Register|Number|Constant|Hash"

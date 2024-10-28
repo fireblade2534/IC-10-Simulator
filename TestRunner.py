@@ -57,7 +57,14 @@ def MainTest():
                         Case.FailTest(f'Field "{A}" expected {X["Expected"]["Fields"][A]} got {B.Value}')
                 
             for A,B in MM.Networks[0].DeviceList[69].State.Registers.items():
-                if B != X["Expected"]["Registery"][A]:
+                Failed=False
+                if type(X["Expected"]["Registery"][A]) == str:
+                    if B != X["Expected"]["Registery"][A]:
+                        Failed=True
+                else:
+                    if abs(B - X["Expected"]["Registery"][A]) > 0.0000001:
+                        Failed=True
+                if Failed:
                     Case.FailTest(f'Registery "{A}" expected {X["Expected"]["Registery"][A]} got {B}')
             
             #Account for extra constants

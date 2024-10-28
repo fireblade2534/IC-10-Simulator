@@ -340,6 +340,19 @@ class CodeRunner:
             return
         self.Registers[Index1]=math.trunc(Value1)
 
+    def Instruction_Asin(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        try:
+            self.Registers[Index1]=math.asin(Value1)
+        except:
+            self.Registers[Index1]="NaN"
+
     def Instruction_Acos(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
@@ -348,7 +361,76 @@ class CodeRunner:
         if Value1 == "NaN":
             self.Registers[Index1]="NaN"
             return
-        self.Registers[Index1]=math.acos(Value1)
+        try:
+            self.Registers[Index1]=math.acos(Value1)
+        except:
+            self.Registers[Index1]="NaN"
+
+    def Instruction_Atan(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        try:
+            self.Registers[Index1]=math.atan(Value1)
+        except:
+            self.Registers[Index1]="NaN"
+
+    def Instruction_Atan2(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        try:
+            self.Registers[Index1]=math.atan2(Value1,Value2)
+        except:
+            self.Registers[Index1]="NaN"
+
+    def Instruction_Sin(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        try:
+            self.Registers[Index1]=math.sin(Value1)
+        except:
+            self.Registers[Index1]="NaN"
+
+    def Instruction_Cos(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        try:
+            self.Registers[Index1]=math.cos(Value1)
+        except:
+            self.Registers[Index1]="NaN"
+
+    def Instruction_Tan(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            self.Registers[Index1]="NaN"
+            return
+        try:
+            self.Registers[Index1]=math.tan(Value1)
+        except:
+            self.Registers[Index1]="NaN"
 
     def Instruction_Yield(self,*args):
         return
