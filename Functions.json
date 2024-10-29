@@ -189,6 +189,11 @@
     "Function": "Instruction_Pop",
     "Args": ["Register"]
   },
+  "poke": {
+    "Alias": { "poke": 2 },
+    "Function": "Instruction_Poke",
+    "Args": ["Number|Register|Constant|Hash","Number|Register|Constant|Hash"]
+  },
   "hcf": {
     "Alias": { "hcf": 0 },
     "Function": "Instruction_Hcf",

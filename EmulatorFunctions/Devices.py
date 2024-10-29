@@ -506,6 +506,22 @@ class CodeRunner:
             Log.Warning(f"Pop index must be greater then 0 and less then or equal to {self.Parent.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
 
+    def Instruction_Poke(self,*args):
+        Value1=self.GetArgValue(args[1])
+        Value2=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 == "NaN":
+            Log.Warning("Cannot poke at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        if Value1 >= 0 and Value1 < self.Parent.StackLength:
+            self.Stack[Value1]=Value2
+        else:
+            Log.Warning(f"Pop index must be greater then or equal to 0 and less then {self.Parent.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
     def Instruction_Yield(self,*args):
         return
     
