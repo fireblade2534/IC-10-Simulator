@@ -89,6 +89,13 @@ class CodeRunner:
         if Value.startswith('HASH("') and Value.endswith('")'):
             return "Hash"
         
+        if Value[0] == "$":
+            try:
+                int(Value[1:],16)
+                return "Number"
+            except:
+                pass
+
         try:
             int(Value)
             return "Number"
@@ -158,6 +165,12 @@ class CodeRunner:
         if Value in self.RegisterAliases:
             return self.Registers[self.RegisterAliases[Value]]
         
+        if Value[0] == "$":
+            try:
+                return int(Value[1:],16)
+            except:
+                pass
+
         if Value.startswith('HASH("') and Value.endswith('")'):
             Value=Value[6:-2]
             return ComputeCRC32(Value)

@@ -1,0 +1,4 @@
+move r0 $34
+move r1 $45
+move r2 $1B39
+add r3 $4D2 $10E1

@@ -1,5 +1,1 @@
-push 1
-push 3
-peek r0
-pop r1
-pop r2
+move r1 $E1B2
