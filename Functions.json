@@ -195,7 +195,7 @@
     "Args": ["Number|Register|Constant|Hash","Number|Register|Constant|Hash"]
   },
   "l": {
-    "Alias": { "l": 3 },#DO DEVICE LOAD
+    "Alias": { "l": 3 },
     "Function": "Instruction_Load",
     "Args": ["Register","Device","LogicType"]
   },

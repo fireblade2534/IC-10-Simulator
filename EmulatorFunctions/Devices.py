@@ -720,6 +720,7 @@ class Device:
         self.ReferenceId=ReferenceId
         self.Fields=Fields
         self.Pins=Pins
+        print(self.Pins)
         self.Slots=Slots
         self.Varibles=Varibles
         self.RunsCode=RunsCode
@@ -728,6 +729,9 @@ class Device:
         self.Code=Code
         if RunsCode:
             self.State=CodeRunner(self)
+    
+    def AddNetworkRef(self,Network):
+        self.Network=Network
         
 
 class DeviceMaker:
