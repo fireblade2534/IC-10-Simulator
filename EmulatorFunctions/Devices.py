@@ -508,6 +508,11 @@ class CodeRunner:
 
     def Instruction_Yield(self,*args):
         return
+    
+    def Instruction_Hcf(self,*args):
+        Log.Warning("Hcf triggered",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+        self.Parent.Fields["Error"].Value=1
+        return
 
     def Instruction_Jump(self,*args):
         Line=self.GetArgValue(args[1])

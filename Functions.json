@@ -189,6 +189,11 @@
     "Function": "Instruction_Pop",
     "Args": ["Register"]
   },
+  "hcf": {
+    "Alias": { "hcf": 0 },
+    "Function": "Instruction_Hcf",
+    "Args": []
+  },
   "j": {
     "Alias": { "j": 1 },
     "Function": "Instruction_Jump",
