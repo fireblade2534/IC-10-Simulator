@@ -25,7 +25,7 @@ class CodeRunner:
             self.Stack=[0 for X in range(self.Parent.StackLength)]
         self.Constants={}
 
-        self.DevicePins={}
+        
 
         self.ParseCode()
 
@@ -117,6 +117,10 @@ class CodeRunner:
         
         if Value in self.RegisterAliases:
             return self.RegisterAliases[Value]
+
+        if Value[0] == "d":
+            if Value[1:] in [X for X in range(len(self.Parent.Pins))] + ["b"]:
+                return "Device"
 
         if Value[0] == "r":
             try:
@@ -744,7 +748,7 @@ class DeviceMaker:
         
         Output=copy.deepcopy(self.Devices[DeviceType])
 
-        Output["Pins"]=[0 for X in range(Output["Pins"]["Number"])]
+        Output["Pins"]=[-1 for X in range(Output["Pins"]["Number"])]
 
         PrefabHash=ComputeCRC32(DeviceType)
 
