@@ -194,6 +194,11 @@
     "Function": "Instruction_Poke",
     "Args": ["Number|Register|Constant|Hash","Number|Register|Constant|Hash"]
   },
+  "l": {
+    "Alias": { "l": 3 },#DO DEVICE LOAD
+    "Function": "Instruction_Load",
+    "Args": ["Register","Device","LogicType"]
+  },
   "hcf": {
     "Alias": { "hcf": 0 },
     "Function": "Instruction_Hcf",
