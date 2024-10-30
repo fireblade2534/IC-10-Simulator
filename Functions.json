@@ -204,6 +204,16 @@
     "Function": "Instruction_Save",
     "Args": ["Device","LogicType","Number|Register|Constant|Hash"]
   },
+  "lb": {
+    "Alias": { "lb": 3 },
+    "Function": "Instruction_LoadBatch",
+    "Args": ["Register","Device","LogicType"]
+  },
+  "lbn": {
+    "Alias": { "lbn": 3 },
+    "Function": "Instruction_LoadBatchNamed",
+    "Args": ["Register","Device","LogicType"]
+  },
   "hcf": {
     "Alias": { "hcf": 0 },
     "Function": "Instruction_Hcf",
