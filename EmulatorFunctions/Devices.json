@@ -3,7 +3,7 @@
     "Fields": {
       "Activate": { "Value": 0, "Read": true, "Write": true },
       "Error": { "Value": 0, "Read": true, "Write": false },
-      "LineNumber": { "Value": 0, "Read": true, "Write": true },
+      "LineNumber": { "Value": 0, "Read": false, "Write": false },
       "On": { "Value": 1, "Read": true, "Write": true },
       "Power": { "Value": 1, "Read": true, "Write": false },
       "RequiredPower": { "Value": 0, "Read": true, "Write": false },

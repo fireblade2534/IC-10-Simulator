@@ -247,6 +247,14 @@ class CodeRunner:
         self.Parent.Fields["Error"].Value=1
         return None
 
+    def GetDevice(self,RefID:int):
+        RefObject=self.Parent.Network.GetDevice(RefID)
+        if RefObject != None:
+            return RefObject
+        else:
+            Log.Warning(f"Unkown device at reference id {RefID}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            if self.Parent.Fields["Error"].Value == 1:return
+
     def Instruction_Define(self,*args):
         Value=int(args[2])
         if args[1] not in self.Constants:
@@ -285,6 +293,7 @@ class CodeRunner:
         else:
             Log.Warning("You cannot set a register alias to a device name or a register",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
+
     def Instruction_Add(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=self.GetArgValue(args[2])
