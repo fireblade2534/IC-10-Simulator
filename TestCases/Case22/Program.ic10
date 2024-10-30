@@ -1,0 +1,4 @@
+l r3 dr1 RequiredPower
+move r4 13
+move r13 1
+s drrr4 On 1

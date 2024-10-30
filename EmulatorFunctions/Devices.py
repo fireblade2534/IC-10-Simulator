@@ -40,8 +40,7 @@ class CodeRunner:
             for A,B in Y["Fields"].items():
                 if B["Read"] or B["Write"]:
                     self.LogicTypesList.add(A)
-        print(self.LogicTypesList)
-
+                    
         for X,Y in enumerate(self.Code):
             if "#" in Y:
                 Location=Y.find("#")

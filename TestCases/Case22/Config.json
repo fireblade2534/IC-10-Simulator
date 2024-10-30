@@ -1,0 +1,51 @@
+{
+  "Name": "Device Port Test 1",
+  "LoopLines": 4,
+  "RunDevice": 69,
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{"d0":56} },{"Type":"StructureGasMixer", "ReferenceId": 56} ],
+  "Expected": {
+    "Fields": {
+      "69":{
+        "Activate": 0,
+        "Error": 0,
+        "LineNumber": 4,
+        "On": 1,
+        "Power": 1,
+        "RequiredPower": 0,
+        "Setting": 0
+      },
+      "56":{
+        "Error": 0,
+        "On": 1,
+        "Ratio": 0,
+        "Power": 1,
+        "RequiredPower": 100,
+        "Maximum": 100,
+        "Setting": 0
+      }
+    },
+    "Stack": {},
+    "Registery": {
+      "r0": 0,
+      "r1": 0,
+      "r2": 0,
+      "r3": 100,
+      "r4": 13,
+      "r5": 0,
+      "r6": 0,
+      "r7": 0,
+      "r8": 0,
+      "r9": 0,
+      "r10": 0,
+      "r11": 0,
+      "r12": 0,
+      "r13": 1,
+      "r14": 0,
+      "r15": 0,
+      "r16": 0,
+      "r17": 0
+    },
+    "Alias": { "sp": "r16", "ra": "r17"},
+    "Constant": {}
+  }
+}

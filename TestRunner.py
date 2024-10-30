@@ -1,4 +1,4 @@
-from ast import Pass
+import copy
 import os
 import json
 import EmulatorFunctions.Devices as Devices
@@ -37,26 +37,31 @@ def MainTest():
     for X in Tests:
         MNet=Network.Network()
         DM=Devices.DeviceMaker()
-        MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=X["Code"]))
+        for Y in X["Devices"]:
+            RemovedY=copy.copy(Y)
+            del RemovedY["Type"]
+            del RemovedY["ReferenceId"]
+            MNet.AddDevice(DM.MakeDevice(Y["Type"],Y["ReferenceId"],Code=X["Code"],**RemovedY))
         MM=MainManager([MNet])
 
         Case=TestState(X["CaseName"],X["Name"])
 
         for Y in range(0,X["LoopLines"]):
-            if MM.Networks[0].DeviceList[69].Fields["Error"].Value == 1:
-                Case.FailTest(f"Program errored early on line {MM.Networks[0].DeviceList[69].Fields['LineNumber'].Value}")
+            if MM.Networks[0].DeviceList[X["RunDevice"]].Fields["Error"].Value == 1:
+                Case.FailTest(f"Program errored early on line {MM.Networks[0].DeviceList[X['RunDevice']].Fields['LineNumber'].Value}")
                 break
             MM.RunScripts()
 
         
 
         if Case.TestPassed():
-            for A,B in MM.Networks[0].DeviceList[69].Fields.items():
-                if A not in ["ReferenceId","PrefabHash"]:
-                    if B.Value != X["Expected"]["Fields"][A]:
-                        Case.FailTest(f'Field "{A}" expected {X["Expected"]["Fields"][A]} got {B.Value}')
+            for C,D in X["Expected"]["Fields"].items():
+                for A,B in MM.Networks[0].DeviceList[int(C)].Fields.items():
+                    if A not in ["ReferenceId","PrefabHash"]:
+                        if B.Value != D[A]:
+                            Case.FailTest(f'Field "{A}" expected {D[A]} got {B.Value} in device with reference id {C}')
                 
-            for A,B in MM.Networks[0].DeviceList[69].State.Registers.items():
+            for A,B in MM.Networks[0].DeviceList[X["RunDevice"]].State.Registers.items():
                 Failed=False
                 if type(X["Expected"]["Registery"][A]) == str or type(B) == str:
                     if B != X["Expected"]["Registery"][A]:
@@ -67,7 +72,7 @@ def MainTest():
                 if Failed:
                     Case.FailTest(f'Registery "{A}" expected {X["Expected"]["Registery"][A]} got {B}')
             
-            for A,B in enumerate(MM.Networks[0].DeviceList[69].State.Stack):
+            for A,B in enumerate(MM.Networks[0].DeviceList[X["RunDevice"]].State.Stack):
                 if str(A) in X["Expected"]["Stack"]:
                     Failed=False
                     if type(X["Expected"]["Stack"][str(A)]) == str or type(B) == str:
@@ -84,10 +89,10 @@ def MainTest():
             
             #Account for extra constants
             for A in X["Expected"]["Constant"]:
-                if A not in MM.Networks[0].DeviceList[69].State.Constants:
+                if A not in MM.Networks[0].DeviceList[X["RunDevice"]].State.Constants:
                     Case.FailTest(f'Constant "{A}" not declared')
 
-            for A,B in MM.Networks[0].DeviceList[69].State.Constants.items():
+            for A,B in MM.Networks[0].DeviceList[X["RunDevice"]].State.Constants.items():
                 if A in X["Expected"]["Constant"]:
                     if B != X["Expected"]["Constant"][A]:
                         Case.FailTest(f'Constant "{A}" expected {X["Expected"]["Constant"][A]} got {B}')
@@ -95,11 +100,11 @@ def MainTest():
                     Case.FailTest(f'Extra constant "{A}" was defined')
                 
             for A in X["Expected"]["Alias"]:
-                if A not in MM.Networks[0].DeviceList[69].State.RegisterAliases:
+                if A not in MM.Networks[0].DeviceList[X["RunDevice"]].State.RegisterAliases:
                     Case.FailTest(f'Alias "{A}" not declared')
 
             #Account for not defining alias in program or extra aliases
-            for A,B in MM.Networks[0].DeviceList[69].State.RegisterAliases.items():
+            for A,B in MM.Networks[0].DeviceList[X["RunDevice"]].State.RegisterAliases.items():
                 if A in X["Expected"]["Alias"]:
                     if B != X["Expected"]["Alias"][A]:
                         Case.FailTest(f'Alias "{A}" expected {X["Expected"]["Alias"][A]} got {B}')

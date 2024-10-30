@@ -1,16 +1,19 @@
 {
   "Name": "Constant Test 1",
-  "LoopLines":2,
+  "LoopLines": 2,
+  "RunDevice": 69,
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69} ],
   "Expected": {
     "Stack": {},
-    "Fields": {
-      "Activate": 0,
-      "Error": 0,
-      "LineNumber": 2,
-      "On": 1,
-      "Power": 1,
-      "RequiredPower": 0,
-      "Setting": 0
+    "Fields": {"69":{
+        "Activate": 0,
+        "Error": 0,
+        "LineNumber": 2,
+        "On": 1,
+        "Power": 1,
+        "RequiredPower": 0,
+        "Setting": 0
+      }
     },
     "Registery": {
       "r0": 0,
@@ -33,6 +36,6 @@
       "r17": 0
     },
     "Alias": { "sp": "r16", "ra": "r17" },
-    "Constant": {"Bob":50,"bob":60}
+    "Constant": { "Bob": 50, "bob": 60 }
   }
 }

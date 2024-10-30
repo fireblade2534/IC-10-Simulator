@@ -1,15 +1,18 @@
 {
   "Name": "Stack Functions Test 2",
   "LoopLines": 5,
+  "RunDevice": 69,
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69 } ],
   "Expected": {
-    "Fields": {
+    "Fields": {"69":{
       "Activate": 0,
       "Error": 0,
       "LineNumber": 5,
       "On": 1,
       "Power": 1,
-      "RequiredPower": 0,
-      "Setting": 0
+        "RequiredPower": 0,
+        "Setting": 0
+      }
     },
     "Stack": {"0":5,"16":69,"15":25,"50":50},
     "Registery": {

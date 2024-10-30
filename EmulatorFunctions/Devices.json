@@ -25,5 +25,32 @@
     "Variables": {
       "Code": "NONE"
     }
+  },
+  "StructureGasMixer": {
+    "Fields": {
+      "Error": { "Value": 0, "Read": true, "Write": false },
+      "On": { "Value": 0, "Read": true, "Write": true },
+      "Ratio": { "Value": 0, "Read": true, "Write": false },
+      "Power": { "Value": 1, "Read": true, "Write": false },
+      "RequiredPower": { "Value": 100, "Read": true, "Write": false },
+      "Maximum": { "Value": 100, "Read": true, "Write": false },
+      "Setting": { "Value": 0, "Read": true, "Write": true }
+    },
+    "Pins": {
+      "Number": 0
+    },
+    "Slots": {
+      "Number": 0
+    },
+    "Properties": {
+      "RunCode": false,
+      "Stack": {
+        "Enabled": false,
+        "Length": 512
+      }
+    },
+    "Variables": {
+      "Code": "NONE"
+    }
   }
 }
