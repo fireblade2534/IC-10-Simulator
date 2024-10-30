@@ -1,1 +1,2 @@
-alias r5 r6
+l r0 db On
+s db On 10

@@ -37,8 +37,9 @@ class CodeRunner:
     def ParseCode(self):
         self.LogicTypesList=set()
         for X,Y in self.DevicesList.items():
-            for A in Y["Fields"]:
-                self.LogicTypesList.add(A)
+            for A,B in Y["Fields"].items():
+                if B["Read"] or B["Write"]:
+                    self.LogicTypesList.add(A)
         print(self.LogicTypesList)
 
         for X,Y in enumerate(self.Code):
@@ -111,7 +112,7 @@ class CodeRunner:
                     pass
             else:
                 try:
-                    if Value in self.Parent.Pins:
+                    if Value[1:] in ([str(X) for X in range(len(self.Parent.Pins) - 1)] + ["b"]):
                         return "Device"
                 except:
                     pass
@@ -189,7 +190,7 @@ class CodeRunner:
                 except:
                     pass
             else:
-                if Value in self.Parent.Pins:
+                if Value[0] == "d" and Value[1:] in ([str(X) for X in range(len(self.Parent.Pins) - 1)] + ["b"]):
                     return Value
 
         if Value[0] == "r":
@@ -261,6 +262,7 @@ class CodeRunner:
         return None
 
     def GetDeviceObject(self,RefID:int):
+        if self.Parent.Fields["Error"].Value == 1:return
         RefObject=self.Parent.Network.GetDevice(RefID)
         if RefObject != None:
             return RefObject
@@ -611,9 +613,40 @@ class CodeRunner:
     def Instruction_Load(self,*args):
         Index1=self.GetArgIndex(args[1])
         Index2=self.GetArgIndex(args[2])
+        Value1=args[3]
         if self.Parent.Fields["Error"].Value == 1:return
 
-        print(Index1,Index2)
+
+        if Index2 in self.Parent.Pins:
+            DeviceObject=self.GetDeviceObject(self.Parent.Pins[Index2])
+        else:
+            Log.Warning(f"No device at {Index2}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+        
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        FieldValue=DeviceObject.GetFieldValue(Value1)
+        if self.Parent.Fields["Error"].Value == 1:return
+        #print(Index1,Index2)
+        self.Registers[Index1]=FieldValue
+
+    def Instruction_Save(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=args[2]
+        Value2=self.GetArgValue(args[3])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Index1 in self.Parent.Pins:
+            DeviceObject=self.GetDeviceObject(self.Parent.Pins[Index1])
+        else:
+            Log.Warning(f"No device at {Index1}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+        
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        DeviceObject.SetFieldValue(Value1,Value2)   
 
     def Instruction_Yield(self,*args):
         return
@@ -789,7 +822,6 @@ class CodeRunner:
                         for X in range(0,len(CurrentLine) - 1):
                             TargetArgTypes=CurrentFunction["Args"][X].split("|")
                             if self.GetArgType(CurrentLine[X+1],TargetArgTypes) not in TargetArgTypes:
-
                                 Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                                 self.Parent.Fields["Error"].Value=1
                                 break
@@ -825,7 +857,34 @@ class Device:
     
     def AddNetworkRef(self,Network):
         self.Network=Network
-        
+
+    def GetFieldValue(self,FieldName):
+        if FieldName in self.Fields:
+            if self.Fields[FieldName].Read:
+                return self.Fields[FieldName].Value
+            else:
+                Log.Warning(f"{FieldName} cannot be read",Caller=f"Script line {self.Fields['LineNumber'].Value}")
+                self.Parent.Fields["Error"].Value=1
+        else:
+            Log.Warning(f"Unknown device value {FieldName}",Caller=f"Script line {self.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
+    def SetFieldValue(self,FieldName,Value):
+        if FieldName in self.Fields:
+            if self.Fields[FieldName].Write:
+                self.Fields[FieldName].Value=Value
+            else:
+                Log.Warning(f"{FieldName} cannot be written",Caller=f"Script line {self.Fields['LineNumber'].Value}")
+                self.Parent.Fields["Error"].Value=1
+        else:
+            Log.Warning(f"Unknown device value {FieldName}",Caller=f"Script line {self.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
+    def PrintFields(self):
+        Output=["\n+------------+-------+\n|Fields        |       |"]
+        for X,Y in self.Fields.items():
+            Output.append(f"|{X:<14}|{Y.Value:<7}|")
+        Log.Info("\n".join(Output)+"\n+--------------+-------+")
 
 class DeviceMaker:
     def __init__(self,DeviceFile:str="EmulatorFunctions/Devices.json"):
