@@ -30,3 +30,4 @@ if __name__ == "__main__":
             continue
         MM.Networks[0].DeviceList[69].State.PrintRegisters()
     MM.Networks[0].DeviceList[69].State.PrintStack()
+    MM.Networks[0].DeviceList[69].State.PrintAlias()

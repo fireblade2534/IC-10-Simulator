@@ -56,7 +56,18 @@ class CodeRunner:
         Output=["\n+------------+-------+\n|Constants   |       |"]
         for X,Y in self.Constants.items():
             Output.append(f"|{X:<12}|{Y:<7}|")
+        Log.Info("\n".join(Output)+"\n+------------+-------+")
+
+    def PrintAlias(self):
+        Output=["\n+------------+-------+\n|Aliases     |       |"]
+        for X,Y in self.RegisterAliases.items():
+            Output.append(f"|{X:<12}|{Y:<7}|")
+
+        for X,Y in self.PinAliases.items():
+            Output.append(f"|{X:<12}|{Y:<7}|")
+
         Log.Info("\n".join(Output)+"\n+------------+-------+") 
+
 
     def PrintStack(self):
         Output=["\n+------------+-------+\n|Stack       |       |"]
@@ -134,7 +145,10 @@ class CodeRunner:
             return None
         
         if Value in self.RegisterAliases:
-            return self.RegisterAliases[Value]
+            return self.GetArgIndex(self.RegisterAliases[Value])
+
+        if Value in self.PinAliases:
+            return self.GetArgIndex(self.PinAliases[Value])
 
         if Value[0] == "d":
             if "r" in Value:
@@ -155,7 +169,7 @@ class CodeRunner:
                             return None
                     RegisterIndex=f"d{RegisterIndex}"
                     if RegisterIndex in self.Parent.Pins:
-                        return self.Parent.Pins[RegisterIndex]
+                        return RegisterIndex
                     Log.Warning("Indirect device values have to be bettween 0 and 5",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                     self.Parent.Fields["Error"].Value=1
                     return None
@@ -163,7 +177,7 @@ class CodeRunner:
                     pass
             else:
                 if Value in self.Parent.Pins:
-                    return self.Parent.Pins[Value]
+                    return Value
 
         if Value[0] == "r":
             try:
@@ -210,7 +224,7 @@ class CodeRunner:
             except:
                 pass
         if Value in self.RegisterAliases:
-            return self.Registers[self.RegisterAliases[Value]]
+            return self.GetArgValue(self.RegisterAliases[Value])
         
         if Value[0] == "$":
             try:
@@ -252,19 +266,22 @@ class CodeRunner:
         
     def Instruction_Alias(self,*args):
         if self.GetArgType(args[1]) == "String":
-            if args[2][0] == "r":
-                if args[1] not in self.RegisterAliases:
+            if args[1] not in self.Constants:
+                if args[1] in self.RegisterAliases:
+                    del self.RegisterAliases[args[1]]
+                if args[1] in self.PinAliases:
+                    del self.PinAliases[args[1]]
+
+                if args[2][0] == "r":
                     self.RegisterAliases[args[1]]=args[2]
-                    if args[1] in self.Constants:
-                        del self.Constants[args[1]]
-                        #Check wether it should throw an error or not
+                elif args[2][0] == "d":
+                    self.PinAliases[args[1]]=args[2]
                 else:
-                    Log.Warning("Cannot overwrite an alias",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
-                    if self.Parent.Fields["Error"].Value == 1:return
-            elif args[2][0] == "d":
-                pass #ADD DEVICE SUPPORT
+                    Log.Error("Unkown alias type not caught by update")
             else:
-                Log.Error("Unkown alias type not caught by update")
+                Log.Warning("Cannot overwrite a constant",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+                if self.Parent.Fields["Error"].Value == 1:return
+            
         else:
             Log.Warning("You cannot set a register alias to a device name or a register",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
@@ -774,7 +791,6 @@ class Device:
         self.ReferenceId=ReferenceId
         self.Fields=Fields
         self.Pins=Pins
-        print(self.Pins)
         self.Slots=Slots
         self.Varibles=Varibles
         self.RunsCode=RunsCode
