@@ -195,9 +195,9 @@
     "Args": ["Number|Register|Constant|Hash","Number|Register|Constant|Hash"]
   },
   "l": {
-    "Alias": { "l": 3 },
+    "Alias": { "l": 2 },
     "Function": "Instruction_Load",
-    "Args": ["Register","Device","LogicType"]
+    "Args": ["Register","Device"]
   },
   "hcf": {
     "Alias": { "hcf": 0 },

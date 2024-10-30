@@ -1,4 +1,4 @@
-from ast import Index
+from ast import Dict
 from UtilityFunctions.Error import *
 from UtilityFunctions.Utility import *
 from Main import Log
@@ -21,11 +21,12 @@ class CodeRunner:
         self.Code=self.Parent.Code.split("\n")
         self.Registers={f"r{X}":0 for X in range(0,18)}
         self.RegisterAliases={"sp":"r16","ra":"r17"}
+
+        self.PinAliases={}
+
         if self.Parent.StackEnabled == True:
             self.Stack=[0 for X in range(self.Parent.StackLength)]
-        self.Constants={}
-
-        
+        self.Constants={}       
 
         self.ParseCode()
 
@@ -77,6 +78,23 @@ class CodeRunner:
         if Value in self.RegisterAliases:
             return "Register"
         
+        if Value in self.PinAliases:
+            return "Device"
+
+        if Value[0] == "d" and len(Value) > 1:
+            if "r" in Value:
+                try:
+                    InValue=int(Value[1:].replace("r",""))
+                    if InValue >=0 and InValue < 18:
+                        return "Device"
+                except:
+                    pass
+            else:
+                try:
+                    if Value in self.Parent.Pins:
+                        return "Device"
+                except:
+                    pass
 
         if Value[0] == "r" and len(Value) > 1:
             try:
@@ -119,8 +137,33 @@ class CodeRunner:
             return self.RegisterAliases[Value]
 
         if Value[0] == "d":
-            if Value[1:] in [X for X in range(len(self.Parent.Pins))] + ["b"]:
-                return "Device"
+            if "r" in Value:
+                try:
+                    TempValue=Value[1:]
+                    RegisterIndex=int(TempValue.replace("r",""))
+                    for X in range(TempValue.count("r")):
+                        if RegisterIndex != "NaN":
+                            if RegisterIndex >= 0 and RegisterIndex < 18:
+                                RegisterIndex=self.Registers[f"r{RegisterIndex}"]
+                            else:
+                                Log.Warning("Indirect device values have to be bettween 0 and 17",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+                                self.Parent.Fields["Error"].Value=1
+                                return None
+                        else:
+                            Log.Warning("Indirect device values have to be bettween 0 and 17 not NaN",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+                            self.Parent.Fields["Error"].Value=1
+                            return None
+                    RegisterIndex=f"d{RegisterIndex}"
+                    if RegisterIndex in self.Parent.Pins:
+                        return self.Parent.Pins[RegisterIndex]
+                    Log.Warning("Indirect device values have to be bettween 0 and 5",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+                    self.Parent.Fields["Error"].Value=1
+                    return None
+                except:
+                    pass
+            else:
+                if Value in self.Parent.Pins:
+                    return self.Parent.Pins[Value]
 
         if Value[0] == "r":
             try:
@@ -526,6 +569,13 @@ class CodeRunner:
             Log.Warning(f"Pop index must be greater then or equal to 0 and less then {self.Parent.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
 
+    def Instruction_Load(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Index2=self.GetArgIndex(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        print(Index1,Index2)
+
     def Instruction_Yield(self,*args):
         return
     
@@ -748,7 +798,8 @@ class DeviceMaker:
         
         Output=copy.deepcopy(self.Devices[DeviceType])
 
-        Output["Pins"]=[-1 for X in range(Output["Pins"]["Number"])]
+        Output["Pins"]={"db":ReferenceId}#{(str(X),-1) for X in range(Output["Pins"]["Number"])}
+        #Output["Pins"]["db"]=ReferenceId
 
         PrefabHash=ComputeCRC32(DeviceType)
 
@@ -759,11 +810,12 @@ class DeviceMaker:
                 else:
                     raise TypeError
             elif X == "Pins":
-                if type(Y) == list:
-                    for A,B in enumerate(Y):
+                if type(Y) == dict:
+                    for A,B in Y.items():
                         Output["Pins"][A]=B
                 else:
                     raise TypeError
+                    
                 
             elif X == "Slots":
                 pass

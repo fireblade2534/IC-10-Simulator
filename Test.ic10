@@ -1,5 +1,3 @@
-poke 16 69
-poke 15 25
-poke 0 5
-move r0 50
-poke r0 r0
+move r1 19
+move r14 3
+l r0 drr1
