@@ -1,5 +1,1 @@
-move r1 5
-alias BOB rr1
-move BOB 50
-move r1 6
-move BOB 100
+alias r5 r6

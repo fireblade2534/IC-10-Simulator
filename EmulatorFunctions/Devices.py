@@ -266,7 +266,7 @@ class CodeRunner:
         
     def Instruction_Alias(self,*args):
         if self.GetArgType(args[1]) == "String":
-            if args[1] not in self.Constants:
+            if args[1] not in self.Constants and args[1] not in self.Parent.Pins and args[1] not in self.Registers:
                 if args[1] in self.RegisterAliases:
                     del self.RegisterAliases[args[1]]
                 if args[1] in self.PinAliases:
@@ -279,7 +279,7 @@ class CodeRunner:
                 else:
                     Log.Error("Unkown alias type not caught by update")
             else:
-                Log.Warning("Cannot overwrite a constant",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+                Log.Warning("Cannot overwrite a constant/builtin register/builtin device index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                 if self.Parent.Fields["Error"].Value == 1:return
             
         else:
