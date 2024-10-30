@@ -13,7 +13,9 @@ import re
 epsilon=pow(2,-23)
 
 class CodeRunner:
-    def __init__(self,Parent,FilePath="Functions.json"):
+    def __init__(self,Parent,FilePath="Functions.json",DeviceFile:str="EmulatorFunctions/Devices.json"):
+        self.DevicesList=json.loads(open(DeviceFile,"r").read())
+
         self.FunctionMap=json.load(open(FilePath,"r"))
         for X,Y in self.FunctionMap.items():
             Y["Function"]=getattr(self,Y["Function"])
@@ -33,6 +35,12 @@ class CodeRunner:
         self.HighestSP=0
 
     def ParseCode(self):
+        self.LogicTypesList=set()
+        for X,Y in self.DevicesList.items():
+            for A in Y["Fields"]:
+                self.LogicTypesList.add(A)
+        print(self.LogicTypesList)
+
         for X,Y in enumerate(self.Code):
             if "#" in Y:
                 Location=Y.find("#")
@@ -46,6 +54,7 @@ class CodeRunner:
                         Log.Warning("You cannot declare two lables with the same name",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                         self.Parent.Fields["Error"].Value=1
                     self.Code[X]=""
+        
     def PrintRegisters(self):
         Output=["\n+------------+-------+\n|Registers   |       |"]
         for X,Y in self.Registers.items():
@@ -78,7 +87,7 @@ class CodeRunner:
     def ScriptLength(self):
         return len(self.Script)
     
-    def GetArgType(self,Value):
+    def GetArgType(self,Value,TargetTypes=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if len(Value) == 0:
             return "None"
@@ -134,7 +143,11 @@ class CodeRunner:
                 return "Number"
             except:
                 pass
-        
+        if "String" in TargetTypes:
+            return "String"
+        else:
+            if Value in self.LogicTypesList:
+                return "LogicType"
         return "String"
 
     def GetArgIndex(self,Value):
@@ -247,7 +260,7 @@ class CodeRunner:
         self.Parent.Fields["Error"].Value=1
         return None
 
-    def GetDevice(self,RefID:int):
+    def GetDeviceObject(self,RefID:int):
         RefObject=self.Parent.Network.GetDevice(RefID)
         if RefObject != None:
             return RefObject
@@ -273,7 +286,7 @@ class CodeRunner:
         self.Registers[Index1]=Value2
         
     def Instruction_Alias(self,*args):
-        if self.GetArgType(args[1]) == "String":
+        if self.GetArgType(args[1],["String"]) == "String":
             if args[1] not in self.Constants and args[1] not in self.Parent.Pins and args[1] not in self.Registers:
                 if args[1] in self.RegisterAliases:
                     del self.RegisterAliases[args[1]]
@@ -774,7 +787,8 @@ class CodeRunner:
                     if len(CurrentLine) - 1 == CurrentFunction["Alias"][CurrentLine[0]]:
                         
                         for X in range(0,len(CurrentLine) - 1):
-                            if self.GetArgType(CurrentLine[X+1]) not in CurrentFunction["Args"][X].split("|"):
+                            TargetArgTypes=CurrentFunction["Args"][X].split("|")
+                            if self.GetArgType(CurrentLine[X+1],TargetArgTypes) not in TargetArgTypes:
 
                                 Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                                 self.Parent.Fields["Error"].Value=1
