@@ -17,7 +17,10 @@ class CodeRunner:
         self.DevicesList=json.loads(open(DeviceFile,"r").read())
 
         self.FunctionMap=json.load(open(FilePath,"r"))
-        for X,Y in self.FunctionMap.items():
+        for X,Y in self.FunctionMap["SpecialTypes"].items():
+            Y["ConfirmFunction"]=getattr(self,Y["ConfirmFunction"])
+
+        for X,Y in self.FunctionMap["Functions"].items():
             Y["Function"]=getattr(self,Y["Function"])
         self.Parent=Parent
         self.Code=self.Parent.Code.split("\n")
@@ -40,7 +43,7 @@ class CodeRunner:
             for A,B in Y["Fields"].items():
                 if B["Read"] or B["Write"]:
                     self.LogicTypesList.add(A)
-                    
+
         for X,Y in enumerate(self.Code):
             if "#" in Y:
                 Location=Y.find("#")
@@ -87,21 +90,29 @@ class CodeRunner:
     def ScriptLength(self):
         return len(self.Script)
     
-    def GetArgType(self,Value,TargetTypes=[]):
+    def Special_LogicTypes(self,Value,BaseType):
+        return Value in self.LogicTypesList
+
+    def Special_BatchMode(self,Value,BaseType):
+        pass DO THIS
+
+    def Special_DeviceHash(self,Value,BaseType):
+        pass DO THIS
+    def GetArgBaseType(self,Value,TargetTypes=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if len(Value) == 0:
             return "None"
         
-        if Value in self.Constants:
+        if Value in self.Constants and "Constant" in TargetTypes:
             return "Constant"
 
-        if Value in self.RegisterAliases:
+        if Value in self.RegisterAliases and "Register" in TargetTypes:
             return "Register"
         
-        if Value in self.PinAliases:
+        if Value in self.PinAliases and "Device" in TargetTypes:
             return "Device"
 
-        if Value[0] == "d" and len(Value) > 1:
+        if Value[0] == "d" and len(Value) > 1 and "Device" in TargetTypes:
             if "r" in Value:
                 try:
                     InValue=int(Value[1:].replace("r",""))
@@ -116,7 +127,7 @@ class CodeRunner:
                 except:
                     pass
 
-        if Value[0] == "r" and len(Value) > 1:
+        if Value[0] == "r" and len(Value) > 1 and "Register" in TargetTypes:
             try:
                 InValue=int(Value.replace("r",""))
                 if InValue >=0 and InValue < 18:
@@ -124,31 +135,46 @@ class CodeRunner:
             except:
                 pass
         
-        if Value.startswith('HASH("') and Value.endswith('")'):
+        if Value.startswith('HASH("') and Value.endswith('")') and "Hash" in TargetTypes:
             return "Hash"
         
-        if Value[0] == "$":
-            try:
-                int(Value[1:],16)
-                return "Number"
-            except:
-                pass
+        if "Number" in TargetTypes:
+            if Value[0] == "$":
+                try:
+                    int(Value[1:],16)
+                    return "Number"
+                except:
+                    pass
 
-        try:
-            int(Value)
-            return "Number"
-        except:
             try:
-                float(Value)
+                int(Value)
                 return "Number"
             except:
-                pass
-        if "String" in TargetTypes:
-            return "String"
-        else:
-            if Value in self.LogicTypesList:
-                return "LogicType"
+                try:
+                    float(Value)
+                    return "Number"
+                except:
+                    pass
+
+        
+
+
         return "String"
+
+    def GetArgType(self,Value,TargetTypes=[]):
+        IsSpecialType= TargetTypes[0] in self.FunctionMap["SpecialTypes"]
+        if IsSpecialType:
+            SpecialType=TargetTypes[0]
+            TargetTypes=self.FunctionMap["SpecialTypes"][SpecialType]["Types"].split("|")
+        BaseType=self.GetArgBaseType(Value,TargetTypes)
+        if IsSpecialType:
+            if BaseType in TargetTypes:
+                Confirmed=self.FunctionMap["SpecialTypes"][SpecialType]["ConfirmFunction"](Value,BaseType)
+                if Confirmed:
+                    return SpecialType
+                else:
+                    return "None"
+        return BaseType
 
     def GetArgIndex(self,Value):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
@@ -630,7 +656,13 @@ class CodeRunner:
         #print(Index1,Index2)
         self.Registers[Index1]=FieldValue
 
-    def Instruction_Save(self,*args):
+    def Instruction_LoadBatch(self,*args):
+        pass
+
+    def Instruction_LoadBatchNamed(self,*args):
+        pass
+
+    def Instruction_Set(self,*args):
         Index1=self.GetArgIndex(args[1])
         Value1=args[2]
         Value2=self.GetArgValue(args[3])
@@ -814,7 +846,7 @@ class CodeRunner:
         CurrentLine=self.Code[self.Parent.Fields['LineNumber'].Value].strip()
         if CurrentLine != "":
             CurrentLine=SplitNotStringSpaces(CurrentLine," ")
-            for CurrentIndex,CurrentFunction in self.FunctionMap.items():
+            for CurrentIndex,CurrentFunction in self.FunctionMap["Functions"].items():
                 if CurrentLine[0] in CurrentFunction["Alias"]:
                     if len(CurrentLine) - 1 == CurrentFunction["Alias"][CurrentLine[0]]:
                         
@@ -825,7 +857,7 @@ class CodeRunner:
                                 self.Parent.Fields["Error"].Value=1
                                 break
                         else:
-                            self.FunctionMap[CurrentIndex]["Function"](*CurrentLine)
+                            self.FunctionMap["Functions"][CurrentIndex]["Function"](*CurrentLine)
                     else:
                         Log.Warning(f"{CurrentLine[0]} requires {CurrentFunction['Alias'][CurrentLine[0]]} args",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                         self.Parent.Fields["Error"].Value=1

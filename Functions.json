@@ -1,4 +1,10 @@
 {
+  "SpecialTypes":{
+    "LogicType":{"Types":"String","ConfirmFunction":"Special_LogicTypes"},
+    "BatchMode":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_BatchMode"},
+    "DeviceHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_DeviceHash"}
+  },
+  "Functions":{
   "define": {
     "Alias": { "define": 2 },
     "Function": "Instruction_Define",
@@ -201,18 +207,18 @@
   },
   "s": {
     "Alias": { "s": 3 },
-    "Function": "Instruction_Save",
+    "Function": "Instruction_Set",
     "Args": ["Device","LogicType","Number|Register|Constant|Hash"]
   },
   "lb": {
     "Alias": { "lb": 3 },
     "Function": "Instruction_LoadBatch",
-    "Args": ["Register","Device","LogicType"]
+    "Args": ["Register","DeviceHash","LogicType","BatchMode"]
   },
   "lbn": {
     "Alias": { "lbn": 3 },
     "Function": "Instruction_LoadBatchNamed",
-    "Args": ["Register","Device","LogicType"]
+    "Args": ["Register","DeviceHash","LogicType","BatchMode"]
   },
   "hcf": {
     "Alias": { "hcf": 0 },
@@ -295,4 +301,5 @@
       "Number|Register|Constant|Hash"
     ]
   }
+}
 }
