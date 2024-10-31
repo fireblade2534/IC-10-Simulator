@@ -94,10 +94,17 @@ class CodeRunner:
         return Value in self.LogicTypesList
 
     def Special_BatchMode(self,Value,BaseType):
-        pass DO THIS
+        BatchList=["Average","Sum","Minimum","Maximum"]
+        if BaseType == "String":
+            return Value in BatchList
+        return True
 
     def Special_DeviceHash(self,Value,BaseType):
-        pass DO THIS
+        return True
+    
+    def Special_NameHash(self,Value,BaseType):
+        return True
+
     def GetArgBaseType(self,Value,TargetTypes=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
         if len(Value) == 0:
@@ -240,8 +247,10 @@ class CodeRunner:
         self.Parent.Fields["Error"].Value=1
         return None
 
-    def GetArgValue(self,Value):
+    def GetArgValue(self,Value,TargetType=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
+        for X in 
+
         if Value in self.Constants:
             return self.Constants[Value]
         if Value[0] == "r":
@@ -657,7 +666,10 @@ class CodeRunner:
         self.Registers[Index1]=FieldValue
 
     def Instruction_LoadBatch(self,*args):
-        pass
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=args[3]
+        if self.Parent.Fields["Error"].Value == 1:return
 
     def Instruction_LoadBatchNamed(self,*args):
         pass
@@ -944,7 +956,6 @@ class DeviceMaker:
                         Output["Pins"][A]=B
                 else:
                     raise TypeError
-                    
                 
             elif X == "Slots":
                 pass

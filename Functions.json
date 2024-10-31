@@ -1,8 +1,9 @@
 {
   "SpecialTypes":{
     "LogicType":{"Types":"String","ConfirmFunction":"Special_LogicTypes"},
-    "BatchMode":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_BatchMode"},
-    "DeviceHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_DeviceHash"}
+    "BatchMode":{"Types":"Number|Constant|Register|Hash|String","ConfirmFunction":"Special_BatchMode"},
+    "DeviceHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_DeviceHash"},
+    "NameHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_NameHash"} MODIFY to get the arg and wether its valid or not for all special types
   },
   "Functions":{
   "define": {
@@ -211,14 +212,14 @@
     "Args": ["Device","LogicType","Number|Register|Constant|Hash"]
   },
   "lb": {
-    "Alias": { "lb": 3 },
+    "Alias": { "lb": 4 },
     "Function": "Instruction_LoadBatch",
     "Args": ["Register","DeviceHash","LogicType","BatchMode"]
   },
   "lbn": {
-    "Alias": { "lbn": 3 },
+    "Alias": { "lbn": 5 },
     "Function": "Instruction_LoadBatchNamed",
-    "Args": ["Register","DeviceHash","LogicType","BatchMode"]
+    "Args": ["Register","DeviceHash","NameHash","LogicType","BatchMode"]
   },
   "hcf": {
     "Alias": { "hcf": 0 },

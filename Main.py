@@ -20,6 +20,7 @@ if __name__ == "__main__":
     MNet=Network.Network()
     DM=Devices.DeviceMaker()
     MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=open("Test.ic10","r").read(),Pins={"d3":65}))
+    MNet.AddDevice(DM.MakeDevice("StructureGasMixer",65))
     MM=MainManager([MNet])
     #print(MM.Networks[0].DeviceList[69].State.GetArgType("r16"))
     #exit()

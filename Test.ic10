@@ -1,2 +1,1 @@
-l r0 db On
-s db On 10
+lb r0 HASH("StructureGasMixer") Setting Average
