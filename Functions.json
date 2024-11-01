@@ -1,9 +1,9 @@
 {
   "SpecialTypes":{
-    "LogicType":{"Types":"String","ConfirmFunction":"Special_LogicTypes"},
-    "BatchMode":{"Types":"Number|Constant|Register|Hash|String","ConfirmFunction":"Special_BatchMode"},
-    "DeviceHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_DeviceHash"},
-    "NameHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_NameHash"} MODIFY to get the arg and wether its valid or not for all special types
+    "LogicType":{"Types":"String","ConfirmFunction":"Special_LogicTypes","GetArgFunction":"Special_Get_LogicType"},
+    "BatchMode":{"Types":"Number|Constant|Register|Hash|String","ConfirmFunction":"Special_BatchMode","GetArgFunction":"Special_Get_BatchMode"},
+    "DeviceHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_DeviceHash","GetArgFunction":"Special_Get_DeviceHash"},
+    "NameHash":{"Types":"Number|Constant|Register|Hash","ConfirmFunction":"Special_NameHash","GetArgFunction":"Special_Get_NameHash"}
   },
   "Functions":{
   "define": {

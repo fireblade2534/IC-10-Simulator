@@ -19,6 +19,7 @@ class CodeRunner:
         self.FunctionMap=json.load(open(FilePath,"r"))
         for X,Y in self.FunctionMap["SpecialTypes"].items():
             Y["ConfirmFunction"]=getattr(self,Y["ConfirmFunction"])
+            Y["GetArgFunction"]=getattr(self,Y["GetArgFunction"])
 
         for X,Y in self.FunctionMap["Functions"].items():
             Y["Function"]=getattr(self,Y["Function"])
@@ -92,18 +93,26 @@ class CodeRunner:
     
     def Special_LogicTypes(self,Value,BaseType):
         return Value in self.LogicTypesList
+    def Special_Get_LogicType(self,Value,BaseType):
+        pass
 
     def Special_BatchMode(self,Value,BaseType):
         BatchList=["Average","Sum","Minimum","Maximum"]
         if BaseType == "String":
             return Value in BatchList
         return True
+    def Special_Get_BatchMode(self,Value,BaseType):
+        pass
 
     def Special_DeviceHash(self,Value,BaseType):
         return True
+    def Special_Get_DeviceHash(self,Value,BaseType):
+        pass
     
     def Special_NameHash(self,Value,BaseType):
         return True
+    def Special_Get_NameHash(self,Value,BaseType):
+        pass
 
     def GetArgBaseType(self,Value,TargetTypes=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
@@ -294,6 +303,9 @@ class CodeRunner:
         Log.Warning("Failed to parse arg",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
         self.Parent.Fields["Error"].Value=1
         return None
+
+    def GetSpecialArgValue(self,Value,Type):
+        pass
 
     def GetDeviceObject(self,RefID:int):
         if self.Parent.Fields["Error"].Value == 1:return
