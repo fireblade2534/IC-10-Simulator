@@ -93,7 +93,7 @@ class CodeRunner:
     
     def Special_LogicTypes(self,Value,BaseType):
         return Value in self.LogicTypesList
-    def Special_Get_LogicType(self,Value,BaseType):
+    def Special_Get_LogicType(self,Value):
         return Value
 
     def Special_BatchMode(self,Value,BaseType):
@@ -101,10 +101,12 @@ class CodeRunner:
         if BaseType == "String":
             return Value in BatchList
         return True
-    def Special_Get_BatchMode(self,Value,BaseType):
+    def Special_Get_BatchMode(self,Value):
         BatchList={"Average":0,"Sum":1,"Minimum":2,"Maximum":3}
-        if BaseType == "String":
-            return BatchList[Value]
+        if type(Value) == str:
+            if str(Value) in BatchList:
+                return BatchList[Value]
+        print(Value)
         RawValue= self.GetArgValue(Value)
         if RawValue >= 0 and RawValue < 4:
             return RawValue
@@ -116,13 +118,13 @@ class CodeRunner:
 
     def Special_DeviceHash(self,Value,BaseType):
         return True
-    def Special_Get_DeviceHash(self,Value,BaseType):
+    def Special_Get_DeviceHash(self,Value):
         return Value
     
     def Special_NameHash(self,Value,BaseType):
         return True
-    def Special_Get_NameHash(self,Value,BaseType):
-        pass
+    def Special_Get_NameHash(self,Value):
+        return Value
 
     def GetArgBaseType(self,Value,TargetTypes=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
@@ -268,7 +270,6 @@ class CodeRunner:
 
     def GetArgValue(self,Value,TargetType=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
-        for X in 
 
         if Value in self.Constants:
             return self.Constants[Value]
@@ -310,12 +311,22 @@ class CodeRunner:
                 return float(Value)
             except:
                 pass
-        Log.Warning("Failed to parse arg",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
-        self.Parent.Fields["Error"].Value=1
-        return None
+        return str(Value)
+        #Log.Warning("Failed to parse arg",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+        #self.Parent.Fields["Error"].Value=1
+        #return None
 
     def GetSpecialArgValue(self,Value,Type):
-        pass
+        if Type in self.FunctionMap["SpecialTypes"]:
+            ProcessedValue=self.GetArgValue(Value,Type)
+
+            if self.Parent.Fields["Error"].Value == 1:return
+            return self.FunctionMap["SpecialTypes"][Type]["GetArgFunction"](ProcessedValue) 
+        else:
+            Log.Warning(f"Invalid special arg type",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            
+
 
     def GetDeviceObject(self,RefID:int):
         if self.Parent.Fields["Error"].Value == 1:return
@@ -324,7 +335,8 @@ class CodeRunner:
             return RefObject
         else:
             Log.Warning(f"Unkown device at reference id {RefID}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
-            if self.Parent.Fields["Error"].Value == 1:return
+            self.Parent.Fields["Error"].Value=1
+            
 
     def Instruction_Define(self,*args):
         Value=int(args[2])
@@ -683,15 +695,44 @@ class CodeRunner:
         if self.Parent.Fields["Error"].Value == 1:return
 
         FieldValue=DeviceObject.GetFieldValue(Value1)
-        if self.Parent.Fields["Error"].Value == 1:return
+        if FieldValue[0] == None:
+            Log.Warning(FieldValue[1],Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return None
         #print(Index1,Index2)
-        self.Registers[Index1]=FieldValue
+        self.Registers[Index1]=FieldValue[0]
+
+    def CollectDevicesValueBatch(self,Devices,Value,BatchMode):
+        NoDevicesResponse=["NaN",0,0,float('-inf')]
+        
+        Values=[]
+        for X in Devices:
+            FieldValue=X.GetFieldValue(Value)
+            if FieldValue[0] != None:
+                Values.append(FieldValue[0])
+
+        print(Values)
+                
+
+        if len(Values) == 0:
+            return NoDevicesResponse[BatchMode]
+        
+
+        
+
+
 
     def Instruction_LoadBatch(self,*args):
         Index1=self.GetArgIndex(args[1])
-        Value1=self.GetArgValue(args[2])
-        Value2=args[3]
+        Value1=self.GetSpecialArgValue(args[2],"DeviceHash")
+        Value2=self.GetSpecialArgValue(args[3],"LogicType")
+        Value3=self.GetSpecialArgValue(args[4],"BatchMode")
         if self.Parent.Fields["Error"].Value == 1:return
+
+        Devices=self.Parent.Network.GetBatchDevices(Value1)
+        Result=self.CollectDevicesValueBatch(Devices,Value2,Value3)
+        
+
 
     def Instruction_LoadBatchNamed(self,*args):
         pass
@@ -711,7 +752,11 @@ class CodeRunner:
         
         if self.Parent.Fields["Error"].Value == 1:return
 
-        DeviceObject.SetFieldValue(Value1,Value2)   
+        Result=DeviceObject.SetFieldValue(Value1,Value2)   
+        if Result[0] == None:
+            Log.Warning(Result[1],Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
 
     def Instruction_Yield(self,*args):
         return
@@ -904,10 +949,11 @@ class CodeRunner:
         #if self.LineNumber >= len(self.Code):
         #    self.LineNumber=0
 class Device:
-    def __init__(self,PrefabName:str,PrefabHash:int,DeviceName:str,ReferenceId:int,Fields:dict,Pins:dict,Slots:list,Varibles:dict,RunsCode:bool,StackEnabled:bool,StackLength:int,Code:str):
+    def __init__(self,PrefabName:str,PrefabHash:int,DeviceName:str,DeviceNameHash:str,ReferenceId:int,Fields:dict,Pins:dict,Slots:list,Varibles:dict,RunsCode:bool,StackEnabled:bool,StackLength:int,Code:str):
         self.PrefabName=PrefabName
         self.PrefabHash=PrefabHash
         self.DeviceName=DeviceName
+        self.DeviceNameHash=DeviceNameHash
         self.ReferenceId=ReferenceId
         self.Fields=Fields
         self.Pins=Pins
@@ -926,24 +972,21 @@ class Device:
     def GetFieldValue(self,FieldName):
         if FieldName in self.Fields:
             if self.Fields[FieldName].Read:
-                return self.Fields[FieldName].Value
+                return (self.Fields[FieldName].Value,)
             else:
-                Log.Warning(f"{FieldName} cannot be read",Caller=f"Script line {self.Fields['LineNumber'].Value}")
-                self.Parent.Fields["Error"].Value=1
+                return (None,f"{FieldName} cannot be read",)
         else:
-            Log.Warning(f"Unknown device value {FieldName}",Caller=f"Script line {self.Fields['LineNumber'].Value}")
-            self.Parent.Fields["Error"].Value=1
+            return (None,f"Unknown device value {FieldName}",)
 
     def SetFieldValue(self,FieldName,Value):
         if FieldName in self.Fields:
             if self.Fields[FieldName].Write:
                 self.Fields[FieldName].Value=Value
+                return 1
             else:
-                Log.Warning(f"{FieldName} cannot be written",Caller=f"Script line {self.Fields['LineNumber'].Value}")
-                self.Parent.Fields["Error"].Value=1
+                return (None,f"{FieldName} cannot be written")
         else:
-            Log.Warning(f"Unknown device value {FieldName}",Caller=f"Script line {self.Fields['LineNumber'].Value}")
-            self.Parent.Fields["Error"].Value=1
+            return (None,f"Unknown device value {FieldName}")
 
     def PrintFields(self):
         Output=["\n+------------+-------+\n|Fields        |       |"]
@@ -965,7 +1008,7 @@ class DeviceMaker:
         #Output["Pins"]["db"]=ReferenceId
 
         PrefabHash=ComputeCRC32(DeviceType)
-
+        DeviceNameHash=ComputeCRC32(DeviceName)
         for X,Y in kwargs.items():
             if X in Output["Fields"]:
                 if type(Y) == int:
@@ -996,6 +1039,6 @@ class DeviceMaker:
             Output["Fields"][X]=Field(Y["Value"],Y["Read"],Y["Write"])
 
         Property=Output["Properties"]
-        return Device(DeviceType,PrefabHash,DeviceName,ReferenceId,Output["Fields"],Output["Pins"],Output["Slots"],Output["Variables"],Property["RunCode"],Property["Stack"]["Enabled"],Property["Stack"]["Length"],Output["Variables"]["Code"])
+        return Device(DeviceType,PrefabHash,DeviceName,DeviceNameHash,ReferenceId,Output["Fields"],Output["Pins"],Output["Slots"],Output["Variables"],Property["RunCode"],Property["Stack"]["Enabled"],Property["Stack"]["Length"],Output["Variables"]["Code"])
     
     

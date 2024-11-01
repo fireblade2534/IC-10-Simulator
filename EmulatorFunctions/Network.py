@@ -20,6 +20,16 @@ class Network:
         else:
             return None
 
+    def GetBatchDevices(self,DeviceHash,DeviceNameHash:int=-1):
+        Devices=[]
+        for X,Y in self.DeviceList.items():
+            if Y.PrefabHash == DeviceHash:
+                if Y.DeviceNameHash == DeviceNameHash or DeviceNameHash == -1:
+                    Devices.append(self.DeviceList[X])
+        return Devices
+
+
+
     def RunScripts(self):
         for _,Y in self.DeviceList.items():
             if Y.RunsCode:
