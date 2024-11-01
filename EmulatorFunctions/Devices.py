@@ -94,7 +94,7 @@ class CodeRunner:
     def Special_LogicTypes(self,Value,BaseType):
         return Value in self.LogicTypesList
     def Special_Get_LogicType(self,Value,BaseType):
-        pass
+        return Value
 
     def Special_BatchMode(self,Value,BaseType):
         BatchList=["Average","Sum","Minimum","Maximum"]
@@ -102,12 +102,22 @@ class CodeRunner:
             return Value in BatchList
         return True
     def Special_Get_BatchMode(self,Value,BaseType):
-        pass
+        BatchList={"Average":0,"Sum":1,"Minimum":2,"Maximum":3}
+        if BaseType == "String":
+            return BatchList[Value]
+        RawValue= self.GetArgValue(Value)
+        if RawValue >= 0 and RawValue < 4:
+            return RawValue
+        else:
+            Log.Warning("Batch mode value must bettween greater then or euqal too 0 and less then 4",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value} ")
+            self.Parent.Fields["Error"].Value=1
+            return None
+
 
     def Special_DeviceHash(self,Value,BaseType):
         return True
     def Special_Get_DeviceHash(self,Value,BaseType):
-        pass
+        return Value
     
     def Special_NameHash(self,Value,BaseType):
         return True
