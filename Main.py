@@ -16,15 +16,14 @@ class MainManager:
         for X in self.Networks:
             X.RunScripts()
 
+
 if __name__ == "__main__":
     MNet=Network.Network()
     DM=Devices.DeviceMaker()
     MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=open("Test.ic10","r").read(),Pins={"d3":65}))
-    MNet.AddDevice(DM.MakeDevice("StructureGasMixer",65,Setting=50))
-    MNet.AddDevice(DM.MakeDevice("StructureGasMixer",64))
+    MNet.AddDevice(DM.MakeDevice("StructureGasMixer",65,Setting=50,DeviceName="bob"))
+    MNet.AddDevice(DM.MakeDevice("StructureGasMixer",64,DeviceName="bob"))
     MM=MainManager([MNet])
-    #print(MM.Networks[0].DeviceList[69].State.GetArgType("r16"))
-    #exit()
     MM.Networks[0].DeviceList[69].State.PrintConstants()
     for X in range(0,3):
         MM.RunScripts()

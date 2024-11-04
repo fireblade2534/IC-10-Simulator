@@ -5,6 +5,15 @@ def ComputeCRC32(Input):
         Hash = Hash - (1 << 32)
     return Hash
 
+def MakeIntIfClose(Num):
+    try:
+        float(Num)
+    except:
+        return Num
+    if int(Num) - float(Num) < 0.0000000001:
+        return int(Num)
+    return Num
+
 def SplitNotStringSpaces(String,SplitChar):
     Splits=[]
     CurrentString=""

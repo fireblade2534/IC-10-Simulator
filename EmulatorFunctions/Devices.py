@@ -106,7 +106,6 @@ class CodeRunner:
         if type(Value) == str:
             if str(Value) in BatchList:
                 return BatchList[Value]
-        print(Value)
         RawValue= self.GetArgValue(Value)
         if RawValue >= 0 and RawValue < 4:
             return RawValue
@@ -681,7 +680,7 @@ class CodeRunner:
     def Instruction_Load(self,*args):
         Index1=self.GetArgIndex(args[1])
         Index2=self.GetArgIndex(args[2])
-        Value1=args[3]
+        Value1=self.GetSpecialArgValue(args[3],"LogicType")
         if self.Parent.Fields["Error"].Value == 1:return
 
 
@@ -702,6 +701,17 @@ class CodeRunner:
         #print(Index1,Index2)
         self.Registers[Index1]=FieldValue[0]
 
+    def ApplyBatchOperation(self,Values,BatchMode:int):
+        if BatchMode == 0:
+            return sum(Values) / len(Values)
+        elif BatchMode == 1:
+            return sum(Values)
+        elif BatchMode == 2:
+            return min(Values)
+        elif BatchMode == 3:
+            return max(Values)
+        return "NaN"
+
     def CollectDevicesValueBatch(self,Devices,Value,BatchMode):
         NoDevicesResponse=["NaN",0,0,float('-inf')]
         
@@ -711,16 +721,9 @@ class CodeRunner:
             if FieldValue[0] != None:
                 Values.append(FieldValue[0])
 
-        print(Values)
-                
-
         if len(Values) == 0:
             return NoDevicesResponse[BatchMode]
-        
-
-        
-
-
+        return MakeIntIfClose(self.ApplyBatchOperation(Values,BatchMode))
 
     def Instruction_LoadBatch(self,*args):
         Index1=self.GetArgIndex(args[1])
@@ -731,15 +734,24 @@ class CodeRunner:
 
         Devices=self.Parent.Network.GetBatchDevices(Value1)
         Result=self.CollectDevicesValueBatch(Devices,Value2,Value3)
-        
+        self.Registers[Index1]=Result
 
 
     def Instruction_LoadBatchNamed(self,*args):
-        pass
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetSpecialArgValue(args[2],"DeviceHash")
+        Value2=self.GetSpecialArgValue(args[3],"NameHash")
+        Value3=self.GetSpecialArgValue(args[4],"LogicType")
+        Value4=self.GetSpecialArgValue(args[5],"BatchMode")
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        Devices=self.Parent.Network.GetBatchDevices(Value1,Value2)
+        Result=self.CollectDevicesValueBatch(Devices,Value3,Value4)
+        self.Registers[Index1]=Result
 
     def Instruction_Set(self,*args):
         Index1=self.GetArgIndex(args[1])
-        Value1=args[2]
+        Value1=self.GetSpecialArgValue(args[2],"LogicType")
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
@@ -757,6 +769,27 @@ class CodeRunner:
             Log.Warning(Result[1],Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
 
+    def Instruction_SetBatch(self,*args):
+        Value1=self.GetSpecialArgValue(args[1],"DeviceHash")
+        Value2=self.GetSpecialArgValue(args[2],"LogicType")
+        Value3=self.GetArgValue(args[3])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        Devices=self.Parent.Network.GetBatchDevices(Value1)
+        for X in Devices:
+            X.SetFieldValue(Value2,Value3)
+
+
+    def Instruction_SetBatchNamed(self,*args):
+        Value1=self.GetSpecialArgValue(args[1],"DeviceHash")
+        Value2=self.GetSpecialArgValue(args[2],"NameHash")
+        Value3=self.GetSpecialArgValue(args[3],"LogicType")
+        Value4=self.GetArgValue(args[4])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        Devices=self.Parent.Network.GetBatchDevices(Value1,Value2)
+        for X in Devices:
+            X.SetFieldValue(Value3,Value4)
 
     def Instruction_Yield(self,*args):
         return
@@ -982,7 +1015,7 @@ class Device:
         if FieldName in self.Fields:
             if self.Fields[FieldName].Write:
                 self.Fields[FieldName].Value=Value
-                return 1
+                return (1,)
             else:
                 return (None,f"{FieldName} cannot be written")
         else:

@@ -206,11 +206,6 @@
     "Function": "Instruction_Load",
     "Args": ["Register","Device","LogicType"]
   },
-  "s": {
-    "Alias": { "s": 3 },
-    "Function": "Instruction_Set",
-    "Args": ["Device","LogicType","Number|Register|Constant|Hash"]
-  },
   "lb": {
     "Alias": { "lb": 4 },
     "Function": "Instruction_LoadBatch",
@@ -220,6 +215,21 @@
     "Alias": { "lbn": 5 },
     "Function": "Instruction_LoadBatchNamed",
     "Args": ["Register","DeviceHash","NameHash","LogicType","BatchMode"]
+  },
+  "s": {
+    "Alias": { "s": 3 },
+    "Function": "Instruction_Set",
+    "Args": ["Device","LogicType","Number|Register|Constant|Hash"]
+  },
+  "sb": {
+    "Alias": { "sb": 3 },
+    "Function": "Instruction_SetBatch",
+    "Args": ["DeviceHash","LogicType","Number|Register|Constant|Hash"]
+  },
+  "sbn": {
+    "Alias": { "sbn": 4 },
+    "Function": "Instruction_SetBatchNamed",
+    "Args": ["DeviceHash","NameHash","LogicType","Number|Register|Constant|Hash"]
   },
   "hcf": {
     "Alias": { "hcf": 0 },

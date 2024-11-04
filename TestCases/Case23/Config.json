@@ -1,0 +1,74 @@
+{
+  "Name": "Batch Test 1",
+  "LoopLines": 4,
+  "RunDevice": 69,
+  "Devices": [
+    { "Type": "StructureCircuitHousing", "ReferenceId": 69, "Pins": {} },
+    { "Type": "StructureGasMixer", "ReferenceId": 56, "Setting":50, "DeviceName": "bob" },
+    { "Type": "StructureGasMixer", "ReferenceId": 89, "DeviceName": "bob" },
+    { "Type": "StructureGasMixer", "ReferenceId": 72, "DeviceName": "bobthegreat" }
+  ],
+  "Expected": {
+    "Fields": {
+      "69": {
+        "Activate": 0,
+        "Error": 0,
+        "LineNumber": 4,
+        "On": 1,
+        "Power": 1,
+        "RequiredPower": 0,
+        "Setting": 0
+      },
+      "56": {
+        "Error": 0,
+        "On": 0,
+        "Ratio": 0,
+        "Power": 1,
+        "RequiredPower": 100,
+        "Maximum": 100,
+        "Setting": 30
+      },
+      "89": {
+        "Error": 0,
+        "On": 0,
+        "Ratio": 0,
+        "Power": 1,
+        "RequiredPower": 100,
+        "Maximum": 100,
+        "Setting": 30
+      },
+      "72": {
+        "Error": 0,
+        "On": 0,
+        "Ratio": 0,
+        "Power": 1,
+        "RequiredPower": 100,
+        "Maximum": 100,
+        "Setting": 80
+      }
+    },
+    "Stack": {},
+    "Registery": {
+      "r0": 25,
+      "r1": 0,
+      "r2": 140,
+      "r3": 0,
+      "r4": 0,
+      "r5": 0,
+      "r6": 0,
+      "r7": 0,
+      "r8": 0,
+      "r9": 0,
+      "r10": 0,
+      "r11": 0,
+      "r12": 0,
+      "r13": 0,
+      "r14": 0,
+      "r15": 0,
+      "r16": 0,
+      "r17": 0
+    },
+    "Alias": { "sp": "r16", "ra": "r17" },
+    "Constant": {}
+  }
+}
