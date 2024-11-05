@@ -20,12 +20,12 @@ class MainManager:
 if __name__ == "__main__":
     MNet=Network.Network()
     DM=Devices.DeviceMaker()
-    MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=open("Test.ic10","r").read(),Pins={"d3":66}))
+    MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=open("Test.ic10","r").read(),Pins={"d0":65}))
     MNet.AddDevice(DM.MakeDevice("StructureGasMixer",65,Setting=50,DeviceName="bob"))
     MNet.AddDevice(DM.MakeDevice("StructureGasMixer",64,DeviceName="bob"))
     MM=MainManager([MNet])
     MM.Networks[0].DeviceList[69].State.PrintConstants()
-    for X in range(0,3):
+    for X in range(0,6):
         MM.RunScripts()
         if MM.Networks[0].DeviceList[69].Fields["Error"].Value == 1:
             continue

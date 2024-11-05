@@ -877,10 +877,7 @@ class CodeRunner:
             NewLineNumber=self.Parent.Fields['LineNumber'].Value - 1
         self.Parent.Fields['LineNumber'].Value=NewLineNumber
 
-    def Instruction_Branch(self,*args):
-        global epsilon
-        #Branch to line if device is not set and other ones like that
-        FunctionName=args[0]
+    def GetBranchRoot(self,FunctionName):
         if FunctionName.endswith("al"):
             StoreNextLine=True
             FunctionName=FunctionName[:-2]
@@ -893,6 +890,12 @@ class CodeRunner:
         else:
             Relative=False
             FunctionName=FunctionName[1:]
+        return FunctionName,StoreNextLine,Relative
+
+    def Instruction_Branch(self,*args):
+        global epsilon
+        #Branch to line if device is not set and other ones like that
+        FunctionName,StoreNextLine,Relative=self.GetBranchRoot(args[0])
         
         Values=[self.GetArgValue(X) for X in args[1:]]
         if self.Parent.Fields["Error"].Value == 1:return
@@ -989,8 +992,36 @@ class CodeRunner:
                 self.Parent.Fields['LineNumber'].Value=JumpLine - 1
 
     def Instruction_Branch_Devices(self,*args):
-        pass
+        global epsilon
         
+        FunctionName,StoreNextLine,Relative=self.GetBranchRoot(args[0])
+
+        Index1=self.GetArgIndex(args[1])
+        
+
+        JumpLine=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+        if Index1 in self.Parent.Pins:
+            Matched=self.GetDeviceObject(self.Parent.Pins[Index1],DoError=False) != None
+        else:
+            Matched=False
+        if FunctionName == "dns":
+            Matched=not Matched
+        elif FunctionName == "dse":
+            pass
+        else:
+            Log.Warning("Unknown branch type",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return 
+        
+        if Matched == True:
+            if StoreNextLine == True:
+                self.Registers[self.RegisterAliases["ra"]]=self.Parent.Fields['LineNumber'].Value + 1
+
+            if Relative == True:
+                self.Parent.Fields['LineNumber'].Value+=JumpLine - 1
+            else:
+                self.Parent.Fields['LineNumber'].Value=JumpLine - 1
         
 
     def RunUpdate(self):
