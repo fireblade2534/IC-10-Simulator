@@ -149,7 +149,9 @@ class CodeRunner:
                     pass
             else:
                 try:
-                    if Value[1:] in ([str(X) for X in range(len(self.Parent.Pins) - 1)] + ["b"]):
+                    DeviceNumberList=([str(X) for X in range(self.Parent.PinsNumber)] + ["b"])
+                    #print(DeviceNumberList)
+                    if Value[1:] in DeviceNumberList:
                         return "Device"
                 except:
                     pass
@@ -242,7 +244,7 @@ class CodeRunner:
                 except:
                     pass
             else:
-                if Value[0] == "d" and Value[1:] in ([str(X) for X in range(len(self.Parent.Pins) - 1)] + ["b"]):
+                if Value[0] == "d" and Value[1:] in ([str(X) for X in range(self.Parent.PinsNumber)] + ["b"]):
                     return Value
 
         if Value[0] == "r":
@@ -327,14 +329,17 @@ class CodeRunner:
             
 
 
-    def GetDeviceObject(self,RefID:int):
+    def GetDeviceObject(self,RefID:int,DoError:bool=True):
         if self.Parent.Fields["Error"].Value == 1:return
         RefObject=self.Parent.Network.GetDevice(RefID)
         if RefObject != None:
             return RefObject
         else:
-            Log.Warning(f"Unkown device at reference id {RefID}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
-            self.Parent.Fields["Error"].Value=1
+            if DoError:
+                Log.Warning(f"Unknown device at reference id {RefID}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+                self.Parent.Fields["Error"].Value=1
+            else:
+                return None
             
 
     def Instruction_Define(self,*args):
@@ -661,6 +666,40 @@ class CodeRunner:
             Log.Warning(f"Pop index must be greater then 0 and less then or equal to {self.Parent.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
 
+    def Instruction_Get(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Index2=self.GetArgIndex(args[2]) 
+        Index3=self.GetArgValue(args[3])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        if Index2 in self.Parent.Pins:
+            DeviceObject=self.GetDeviceObject(self.Parent.Pins[Index2])
+        else:
+            Log.Warning(f"No device at {Index2}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        if DeviceObject.StackEnabled == False:
+            Log.Warning(f"Device does not have a stack",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        if Index3 == "NaN":
+            Log.Warning("Cannot get at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
+        if Index3 >= 1 and Index3 <= DeviceObject.StackLength:
+            self.Registers[Index1]=self.Stack[Index3 - 1]
+            Log.Warning(f"Needs further testing",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+        else:
+            Log.Warning(f"Get must be greater then 0 and less then or equal to {DeviceObject.StackLength}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
+    def Instruction_GetD(self,*args):
+        pass
+        #TODO
+
     def Instruction_Poke(self,*args):
         Value1=self.GetArgValue(args[1])
         Value2=self.GetArgValue(args[2])
@@ -949,6 +988,8 @@ class CodeRunner:
             else:
                 self.Parent.Fields['LineNumber'].Value=JumpLine - 1
 
+    def Instruction_Branch_Devices(self,*args):
+        pass
         
         
 
@@ -964,7 +1005,9 @@ class CodeRunner:
                         
                         for X in range(0,len(CurrentLine) - 1):
                             TargetArgTypes=CurrentFunction["Args"][X].split("|")
-                            if self.GetArgType(CurrentLine[X+1],TargetArgTypes) not in TargetArgTypes:
+                            CurrentArgTypes=self.GetArgType(CurrentLine[X+1],TargetArgTypes)
+                            if CurrentArgTypes not in TargetArgTypes:
+                                print(CurrentArgTypes)
                                 Log.Warning(f"Arg {X+1} of {CurrentLine[0]} must be of type {CurrentFunction['Args'][X]}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
                                 self.Parent.Fields["Error"].Value=1
                                 break
@@ -982,7 +1025,7 @@ class CodeRunner:
         #if self.LineNumber >= len(self.Code):
         #    self.LineNumber=0
 class Device:
-    def __init__(self,PrefabName:str,PrefabHash:int,DeviceName:str,DeviceNameHash:str,ReferenceId:int,Fields:dict,Pins:dict,Slots:list,Varibles:dict,RunsCode:bool,StackEnabled:bool,StackLength:int,Code:str):
+    def __init__(self,PrefabName:str,PrefabHash:int,DeviceName:str,DeviceNameHash:str,ReferenceId:int,Fields:dict,Pins:dict,PinsNumber:int,Slots:list,Varibles:dict,RunsCode:bool,StackEnabled:bool,StackLength:int,Code:str):
         self.PrefabName=PrefabName
         self.PrefabHash=PrefabHash
         self.DeviceName=DeviceName
@@ -990,6 +1033,7 @@ class Device:
         self.ReferenceId=ReferenceId
         self.Fields=Fields
         self.Pins=Pins
+        self.PinsNumber=PinsNumber
         self.Slots=Slots
         self.Varibles=Varibles
         self.RunsCode=RunsCode
@@ -1072,6 +1116,6 @@ class DeviceMaker:
             Output["Fields"][X]=Field(Y["Value"],Y["Read"],Y["Write"])
 
         Property=Output["Properties"]
-        return Device(DeviceType,PrefabHash,DeviceName,DeviceNameHash,ReferenceId,Output["Fields"],Output["Pins"],Output["Slots"],Output["Variables"],Property["RunCode"],Property["Stack"]["Enabled"],Property["Stack"]["Length"],Output["Variables"]["Code"])
+        return Device(DeviceType,PrefabHash,DeviceName,DeviceNameHash,ReferenceId,Output["Fields"],Output["Pins"],self.Devices[DeviceType]["Pins"]["Number"],Output["Slots"],Output["Variables"],Property["RunCode"],Property["Stack"]["Enabled"],Property["Stack"]["Length"],Output["Variables"]["Code"])
     
     

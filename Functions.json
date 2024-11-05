@@ -196,6 +196,16 @@
     "Function": "Instruction_Pop",
     "Args": ["Register"]
   },
+  "get": {
+    "Alias": { "get": 3 },
+    "Function": "Instruction_Get",
+    "Args": ["Register","Device","Number|Register|Constant|Hash"]
+  },
+  "getd": {
+    "Alias": { "getd": 3 },
+    "Function": "Instruction_GetD",
+    "Args": ["Register","DeviceID","Number|Register|Constant|Hash"]
+  },
   "poke": {
     "Alias": { "poke": 2 },
     "Function": "Instruction_Poke",
@@ -309,6 +319,21 @@
       "Number|Register|Constant|Hash",
       "Number|Register|Constant|Hash",
       "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash"
+    ]
+  },
+  "bd": {
+    "Alias": {
+      "bdns":2,
+      "bdnsal":2,
+      "bdse":2,
+      "bdseal":2,
+      "brdns":2,
+      "brdse":2
+    },
+    "Function": "Instruction_Branch_Devices",
+    "Args": [
+      "Device",
       "Number|Register|Constant|Hash"
     ]
   }

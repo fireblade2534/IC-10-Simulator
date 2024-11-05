@@ -103,13 +103,24 @@ def MainTest():
                 if A not in MM.Networks[0].DeviceList[X["RunDevice"]].State.RegisterAliases:
                     Case.FailTest(f'Alias "{A}" not declared')
 
-            #Account for not defining alias in program or extra aliases
             for A,B in MM.Networks[0].DeviceList[X["RunDevice"]].State.RegisterAliases.items():
                 if A in X["Expected"]["Alias"]:
                     if B != X["Expected"]["Alias"][A]:
                         Case.FailTest(f'Alias "{A}" expected {X["Expected"]["Alias"][A]} got {B}')
                 else:
                     Case.FailTest(f'Extra alias "{A}" was defined')
+
+
+            for A in X["Expected"]["PinAlias"]:
+                if A not in MM.Networks[0].DeviceList[X["RunDevice"]].State.PinAliases:
+                    Case.FailTest(f'Pin alias "{A}" not declared')
+
+            for A,B in MM.Networks[0].DeviceList[X["RunDevice"]].State.PinAliases.items():
+                if A in X["Expected"]["PinAlias"]:
+                    if B != X["Expected"]["PinAlias"][A]:
+                        Case.FailTest(f'Pin alias "{A}" expected {X["Expected"]["PinAlias"][A]} got {B}')
+                else:
+                    Case.FailTest(f'Extra pin alias "{A}" was defined')
         Outputs.append(Case)
 
 

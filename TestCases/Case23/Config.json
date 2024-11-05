@@ -69,6 +69,7 @@
       "r17": 0
     },
     "Alias": { "sp": "r16", "ra": "r17" },
+    "PinAlias":{},
     "Constant": {}
   }
 }

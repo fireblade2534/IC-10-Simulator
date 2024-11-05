@@ -36,6 +36,7 @@
       "r17": 2
     },
     "Alias": { "sp": "r16", "ra": "r17"},
+    "PinAlias":{},
     "Constant": {"Branch":5,"NextBranch":10}
   }
 }

@@ -1,3 +1,1 @@
-lbn r0 HASH("StructureGasMixer") HASH("bob") Setting Average
-sb HASH("StructureGasMixer") Setting 30
-lb r2 HASH("StructureGasMixer") Setting Sum
+l r0 d3 Setting

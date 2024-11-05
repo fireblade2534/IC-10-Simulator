@@ -40,9 +40,9 @@ move BOB 100
 ```
 
 TODO:
- - Stack functions relating to other devices
+ - Stack functions relating to other devices <-- Needs to be tested in game
  - Load functions relating to other devices
  - Set functions relating to other devices
- - Branch instructions relating to other devices
+ - Branch instructions relating to other devices <-- WORK ON
  - Aliases for devices
  

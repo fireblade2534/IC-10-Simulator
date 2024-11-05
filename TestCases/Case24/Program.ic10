@@ -1,0 +1,8 @@
+alias Thing d0
+alias SelfStuff db
+l r0 d0 Setting
+s Thing Setting 92
+l r10 Thing Setting
+mul r1 r0 r10
+s db Setting r1
+s SelfStuff On 0
