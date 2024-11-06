@@ -953,14 +953,6 @@ class CodeRunner:
             JumpLine=Values[1]
             Matched=Values[0] == "NaN"
 
-        elif FunctionName == "dns":
-            #TODO
-            pass
-        
-        elif FunctionName == "dse":
-            #TODO
-            pass
-
         elif FunctionName == "ap":
             JumpLine=Values[3]
             Matched=abs(Values[0] - Values[1]) <= max(Values[2] * max(abs(Values[0]), abs(Values[1])),epsilon * 8)
@@ -1023,6 +1015,108 @@ class CodeRunner:
             else:
                 self.Parent.Fields['LineNumber'].Value=JumpLine - 1
         
+    def Instruction_Set_Conditional_Register(self,*args):
+        global epsilon
+        #Branch to line if device is not set and other ones like that
+        FunctionName,_,_=self.GetBranchRoot(args[0])
+        
+        Values=[self.GetArgValue(X) for X in args[2:]]
+        Index1=self.GetArgIndex(args[1])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        Matched=False
+        if FunctionName == "eq":
+            Matched=Values[0] == Values[1]
+
+        elif FunctionName == "eqz":
+            Matched=Values[0] == 0
+
+        elif FunctionName == "ge":
+            Matched=Values[0] >= Values[1]
+
+        elif FunctionName == "gez":
+            Matched=Values[0] >= 0
+
+        elif FunctionName == "gt":
+            Matched=Values[0] > Values[1]
+
+        elif FunctionName == "gtz":
+            Matched=Values[0] > 0
+
+        elif FunctionName == "le":
+            Matched=Values[0] <= Values[1]
+
+        elif FunctionName == "lez":
+            Matched=Values[0] <= 0
+
+        elif FunctionName == "lt":
+            Matched=Values[0] < Values[1]
+        
+        elif FunctionName == "ltz":
+            Matched=Values[0] >= 0
+
+        elif FunctionName == "ne":
+            Matched=Values[0] != Values[1]
+        
+        elif FunctionName == "nez":
+            Matched=Values[0] != 0
+
+        elif FunctionName == "nan":
+            Matched=Values[0] == "NaN"
+
+        elif FunctionName == "nanz":
+            Matched=Values[0] != "NaN"
+
+        elif FunctionName == "ap":
+            Matched=abs(Values[0] - Values[1]) <= max(Values[2] * max(abs(Values[0]), abs(Values[1])),epsilon * 8)
+
+        elif FunctionName == "apz":
+            Matched=abs(Values[0]) <= max(Values[1] * abs(Values[0]), epsilon * 8)
+
+        elif FunctionName == "na":
+            Matched=abs(Values[0] - Values[1]) > max(Values[2] * max(abs(Values[0]), abs(Values[1])), epsilon * 8)
+            
+        elif FunctionName == "naz":
+            Matched=abs(Values[0]) > max (Values[1] * abs(Values[0]), epsilon * 8)
+        else:
+            Log.Warning("Unknown conditional type",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return 
+        
+        self.Registers[Index1]=int(Matched)
+            #self.Registers[self.RegisterAliases["ra"]]=self.Parent.Fields['LineNumber'].Value + 1
+
+    def Instruction_Branch_Devices(self,*args):
+        global epsilon
+        
+        FunctionName,StoreNextLine,Relative=self.GetBranchRoot(args[0])
+
+        Index1=self.GetArgIndex(args[1])
+        
+
+        JumpLine=self.GetArgValue(args[2])
+        if self.Parent.Fields["Error"].Value == 1:return
+        if Index1 in self.Parent.Pins:
+            Matched=self.GetDeviceObject(self.Parent.Pins[Index1],DoError=False) != None
+        else:
+            Matched=False
+        if FunctionName == "dns":
+            Matched=not Matched
+        elif FunctionName == "dse":
+            pass
+        else:
+            Log.Warning("Unknown branch type",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return 
+        
+        if Matched == True:
+            if StoreNextLine == True:
+                self.Registers[self.RegisterAliases["ra"]]=self.Parent.Fields['LineNumber'].Value + 1
+
+            if Relative == True:
+                self.Parent.Fields['LineNumber'].Value+=JumpLine - 1
+            else:
+                self.Parent.Fields['LineNumber'].Value=JumpLine - 1
 
     def RunUpdate(self):
         if self.Parent.Fields['LineNumber'].Value >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:

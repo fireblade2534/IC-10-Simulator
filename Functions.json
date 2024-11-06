@@ -336,6 +336,47 @@
       "Device",
       "Number|Register|Constant|Hash"
     ]
+  },
+  "sr": {
+    "Alias": {
+      "sap":4,
+      "sapz":3,
+      "seq":3,
+      "seqz":2,
+      "sge":3,
+      "sgez":2,
+      "sgt":3,
+      "sgtz":2,
+      "sle":3,
+      "slez":2,
+      "slt":3,
+      "sltz":2,
+      "sna":4,
+      "snan":2,
+      "snanz":2,
+      "snaz":3,
+      "sne":3,
+      "snez":2
+
+    },
+    "Function": "Instruction_Set_Conditional_Register",
+    "Args": [
+      "Register",
+      "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash"
+    ]
+  },
+  "srd": {
+    "Alias": {
+      "sdns":2,
+      "sdse":2
+    },
+    "Function": "Instruction_Set_Conditional_Register_Devices",
+    "Args": [
+      "Register",
+      "Device"
+    ]
   }
 }
 }
