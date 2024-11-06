@@ -1086,18 +1086,16 @@ class CodeRunner:
         self.Registers[Index1]=int(Matched)
             #self.Registers[self.RegisterAliases["ra"]]=self.Parent.Fields['LineNumber'].Value + 1
 
-    def Instruction_Branch_Devices(self,*args):
+    def Instruction_Set_Conditional_Register_Devices(self,*args):
         global epsilon
         
-        FunctionName,StoreNextLine,Relative=self.GetBranchRoot(args[0])
-
+        FunctionName,_,_=self.GetBranchRoot(args[0])
         Index1=self.GetArgIndex(args[1])
-        
+        Index2=self.GetArgIndex(args[2])
 
-        JumpLine=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
-        if Index1 in self.Parent.Pins:
-            Matched=self.GetDeviceObject(self.Parent.Pins[Index1],DoError=False) != None
+        if Index2 in self.Parent.Pins:
+            Matched=self.GetDeviceObject(self.Parent.Pins[Index2],DoError=False) != None
         else:
             Matched=False
         if FunctionName == "dns":
@@ -1105,18 +1103,11 @@ class CodeRunner:
         elif FunctionName == "dse":
             pass
         else:
-            Log.Warning("Unknown branch type",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            Log.Warning("Unknown conditional type",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return 
         
-        if Matched == True:
-            if StoreNextLine == True:
-                self.Registers[self.RegisterAliases["ra"]]=self.Parent.Fields['LineNumber'].Value + 1
-
-            if Relative == True:
-                self.Parent.Fields['LineNumber'].Value+=JumpLine - 1
-            else:
-                self.Parent.Fields['LineNumber'].Value=JumpLine - 1
+        self.Registers[Index1]=int(Matched)
 
     def RunUpdate(self):
         if self.Parent.Fields['LineNumber'].Value >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
