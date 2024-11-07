@@ -400,6 +400,38 @@
       "Number|Register|Constant|Hash",
       "Number|Register|Constant|Hash"
     ]
+  },
+  "nor": {
+    "Alias": {
+      "nor":3
+    },
+    "Function": "Instruction_Bitwise_Nor",
+    "Args": [
+      "Register",
+      "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash"
+    ]
+  },
+  "not": {
+    "Alias": {
+      "not":2
+    },
+    "Function": "Instruction_Bitwise_Not",
+    "Args": [
+      "Register",
+      "Number|Register|Constant|Hash"
+    ]
+  },
+  "or": {
+    "Alias": {
+      "or":3
+    },
+    "Function": "Instruction_Bitwise_Or",
+    "Args": [
+      "Register",
+      "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash"
+    ]
   }
 }
 }
