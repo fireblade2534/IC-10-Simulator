@@ -389,6 +389,17 @@
       "Number|Register|Constant|Hash",
       "Number|Register|Constant|Hash"
     ]
+  },
+  "and": {
+    "Alias": {
+      "and":3
+    },
+    "Function": "Instruction_Bitwise_And",
+    "Args": [
+      "Register",
+      "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash"
+    ]
   }
 }
 }

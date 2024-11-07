@@ -39,6 +39,11 @@ move r1 6
 move BOB 100
 ```
 
+ - Find out if this will error:
+```
+and r1 2.2 3
+```
+
 TODO:
  - Stack functions relating to other devices <-- Needs to be tested in game
  - Load functions relating to other devices

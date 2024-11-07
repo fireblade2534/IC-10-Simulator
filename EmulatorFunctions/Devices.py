@@ -1122,6 +1122,12 @@ class CodeRunner:
             Output=Value3
         self.Registers[Index1]=Output
 
+    def Instruction_Bitwise_And(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        self.Registers[Index1]=Value1 & Value2
+
     def RunUpdate(self):
         if self.Parent.Fields['LineNumber'].Value >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
             return
