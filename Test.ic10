@@ -1,6 +1,4 @@
-bdns d5 2
-move r0 10
-move r1 50
-brdse d0 2
-move r3 40
-move r2 30
+move r1 5
+move r2 5
+seq r3 r1 r2
+seq r4 4 r1

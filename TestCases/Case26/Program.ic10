@@ -1,0 +1,9 @@
+move r1 5
+move r2 5
+seq r3 r1 r2
+seqz r4 0
+sgtz r5 r4
+slt r6 -6 5
+slt r7 5 5
+sne r8 r1 r3
+sdns r9 d0

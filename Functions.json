@@ -377,6 +377,18 @@
       "Register",
       "Device"
     ]
-  }
+  },
+  "select": {
+    "Alias": {
+      "select":2
+    },
+    "Function": "Instruction_Select",
+    "Args": [
+      "Register",
+      "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash",
+      "Number|Register|Constant|Hash"
+    ]
+  },
 }
 }
