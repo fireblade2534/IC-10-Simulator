@@ -1,4 +1,1 @@
-move r1 5
-move r2 5
-seq r3 r1 r2
-seq r4 4 r1
+select r1 5 6 7

@@ -1109,6 +1109,19 @@ class CodeRunner:
         
         self.Registers[Index1]=int(Matched)
 
+    def Instruction_Select(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Value1=self.GetArgValue(args[2])
+        Value2=self.GetArgValue(args[3])
+        Value3=self.GetArgValue(args[4])
+
+        Output=0
+        if Value1 != 0:
+            Output=Value2
+        else:
+            Output=Value3
+        self.Registers[Index1]=Output
+
     def RunUpdate(self):
         if self.Parent.Fields['LineNumber'].Value >= len(self.Code) or self.Parent.Fields["Error"].Value != 0:
             return

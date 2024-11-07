@@ -1,6 +1,6 @@
 {
   "Name": "Conditional Register Test 1",
-  "LoopLines": 9,
+  "LoopLines": 10,
   "RunDevice": 69,
   "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{} }],
   "Expected": {
@@ -8,7 +8,7 @@
       "69":{
         "Activate": 0,
         "Error": 0,
-        "LineNumber": 9,
+        "LineNumber": 10,
         "On": 1,
         "Power": 1,
         "RequiredPower": 0,
@@ -27,7 +27,7 @@
       "r7": 0,
       "r8": 1,
       "r9": 1,
-      "r10": 0,
+      "r10": 6,
       "r11": 0,
       "r12": 0,
       "r13": 0,

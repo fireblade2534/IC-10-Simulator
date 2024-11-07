@@ -380,7 +380,7 @@
   },
   "select": {
     "Alias": {
-      "select":2
+      "select":4
     },
     "Function": "Instruction_Select",
     "Args": [
@@ -389,6 +389,6 @@
       "Number|Register|Constant|Hash",
       "Number|Register|Constant|Hash"
     ]
-  },
+  }
 }
 }
