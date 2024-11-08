@@ -52,5 +52,37 @@
     "Variables": {
       "Code": "NONE"
     }
+  },
+  "StructureActiveVent": {
+    "Fields": {
+      "Power": { "Value": 1, "Read": true, "Write": false },
+      "Open": { "Value": 0, "Read": true, "Write": true },
+      "Mode": { "Value": 0, "Read": true, "Write": true },
+      "Error": { "Value": 0, "Read": true, "Write": false },
+      "PressureExternal": { "Value": 101.325, "Read": true, "Write": true },
+      "PressureInternal": { "Value": 0, "Read": true, "Write": true },
+      "Lock": { "Value": 0, "Read": true, "Write": true },
+      "Setting": { "Value": 0, "Read": true, "Write": true },
+      "Maximum": { "Value": 0, "Read": true, "Write": false },
+      "Ratio": { "Value": 0, "Read": true, "Write": false },
+      "On": { "Value": 0, "Read": true, "Write": true },
+      "RequiredPower": { "Value": 0, "Read": true, "Write": false }
+    },
+    "Pins": {
+      "Number": 0
+    },
+    "Slots": {
+      "Number": 0
+    },
+    "Properties": {
+      "RunCode": false,
+      "Stack": {
+        "Enabled": false,
+        "Length": 512
+      }
+    },
+    "Variables": {
+      "Code": "NONE"
+    }
   }
 }
