@@ -1,0 +1,413 @@
+{
+  "SpecialTypes": {
+    "LogicType": {
+      "Types": "String",
+      "ConfirmFunction": "Special_LogicTypes",
+      "GetArgFunction": "Special_Get_LogicType"
+    },
+    "BatchMode": {
+      "Types": "Number|Constant|Register|Hash|String",
+      "ConfirmFunction": "Special_BatchMode",
+      "GetArgFunction": "Special_Get_BatchMode"
+    },
+    "DeviceHash": {
+      "Types": "Number|Constant|Register|Hash",
+      "ConfirmFunction": "Special_DeviceHash",
+      "GetArgFunction": "Special_Get_DeviceHash"
+    },
+    "NameHash": {
+      "Types": "Number|Constant|Register|Hash",
+      "ConfirmFunction": "Special_NameHash",
+      "GetArgFunction": "Special_Get_NameHash"
+    }
+  },
+  "Functions": {
+    "define": {
+      "Alias": { "define": 2 },
+      "Function": "Instruction_Define",
+      "Args": ["String", "Number|Hash"]
+    },
+    "alias": {
+      "Alias": { "alias": 2 },
+      "Function": "Instruction_Alias",
+      "Args": ["String", "Register|Device"]
+    },
+    "move": {
+      "Alias": { "move": 2 },
+      "Function": "Instruction_Move",
+      "Args": ["Register", "Number|Constant|Register|Hash"]
+    },
+    "add": {
+      "Alias": { "add": 3 },
+      "Function": "Instruction_Add",
+      "Args": [
+        "Register",
+        "Register|Number|Constant|Hash",
+        "Register|Number|Constant|Hash"
+      ]
+    },
+    "sub": {
+      "Alias": { "sub": 3 },
+      "Function": "Instruction_Sub",
+      "Args": [
+        "Register",
+        "Register|Number|Constant|Hash",
+        "Register|Number|Constant|Hash"
+      ]
+    },
+    "mul": {
+      "Alias": { "mul": 3 },
+      "Function": "Instruction_Mul",
+      "Args": [
+        "Register",
+        "Register|Number|Constant|Hash",
+        "Register|Number|Constant|Hash"
+      ]
+    },
+    "div": {
+      "Alias": { "div": 3 },
+      "Function": "Instruction_Div",
+      "Args": [
+        "Register",
+        "Register|Number|Constant|Hash",
+        "Register|Number|Constant|Hash"
+      ]
+    },
+    "abs": {
+      "Alias": { "abs": 2 },
+      "Function": "Instruction_Abs",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "ceil": {
+      "Alias": { "ceil": 2 },
+      "Function": "Instruction_Ceil",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "floor": {
+      "Alias": { "floor": 2 },
+      "Function": "Instruction_Floor",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "exp": {
+      "Alias": { "exp": 3 },
+      "Function": "Instruction_Exp",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "log": {
+      "Alias": { "log": 2 },
+      "Function": "Instruction_Log",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "rand": {
+      "Alias": { "rand": 1 },
+      "Function": "Instruction_Rand",
+      "Args": ["Register"]
+    },
+    "round": {
+      "Alias": { "round": 2 },
+      "Function": "Instruction_Round",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "sqrt": {
+      "Alias": { "sqrt": 2 },
+      "Function": "Instruction_Sqrt",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "trunc": {
+      "Alias": { "trunc": 2 },
+      "Function": "Instruction_Trunc",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "asin": {
+      "Alias": { "asin": 2 },
+      "Function": "Instruction_Asin",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "acos": {
+      "Alias": { "acos": 2 },
+      "Function": "Instruction_Acos",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "atan": {
+      "Alias": { "atan": 2 },
+      "Function": "Instruction_Atan",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "atan2": {
+      "Alias": { "atan2": 3 },
+      "Function": "Instruction_Atan2",
+      "Args": [
+        "Register",
+        "Register|Number|Constant|Hash",
+        "Register|Number|Constant|Hash"
+      ]
+    },
+    "sin": {
+      "Alias": { "sin": 2 },
+      "Function": "Instruction_Sin",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "cos": {
+      "Alias": { "cos": 2 },
+      "Function": "Instruction_Cos",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "tan": {
+      "Alias": { "tan": 2 },
+      "Function": "Instruction_Tan",
+      "Args": ["Register", "Register|Number|Constant|Hash"]
+    },
+    "yield": {
+      "Alias": { "yield": 0 },
+      "Function": "Instruction_Yield",
+      "Args": []
+    },
+    "peek": {
+      "Alias": { "peek": 1 },
+      "Function": "Instruction_Peek",
+      "Args": ["Register"]
+    },
+    "push": {
+      "Alias": { "push": 1 },
+      "Function": "Instruction_Push",
+      "Args": ["Number|Register|Constant|Hash"]
+    },
+    "pop": {
+      "Alias": { "pop": 1 },
+      "Function": "Instruction_Pop",
+      "Args": ["Register"]
+    },
+    "get": {
+      "Alias": { "get": 3 },
+      "Function": "Instruction_Get",
+      "Args": ["Register", "Device", "Number|Register|Constant|Hash"]
+    },
+    "getd": {
+      "Alias": { "getd": 3 },
+      "Function": "Instruction_GetD",
+      "Args": ["Register", "DeviceID", "Number|Register|Constant|Hash"]
+    },
+    "poke": {
+      "Alias": { "poke": 2 },
+      "Function": "Instruction_Poke",
+      "Args": ["Number|Register|Constant|Hash", "Number|Register|Constant|Hash"]
+    },
+    "l": {
+      "Alias": { "l": 3 },
+      "Function": "Instruction_Load",
+      "Args": ["Register", "Device", "LogicType"]
+    },
+    "lb": {
+      "Alias": { "lb": 4 },
+      "Function": "Instruction_LoadBatch",
+      "Args": ["Register", "DeviceHash", "LogicType", "BatchMode"]
+    },
+    "lbn": {
+      "Alias": { "lbn": 5 },
+      "Function": "Instruction_LoadBatchNamed",
+      "Args": ["Register", "DeviceHash", "NameHash", "LogicType", "BatchMode"]
+    },
+    "s": {
+      "Alias": { "s": 3 },
+      "Function": "Instruction_Set",
+      "Args": ["Device", "LogicType", "Number|Register|Constant|Hash"]
+    },
+    "sb": {
+      "Alias": { "sb": 3 },
+      "Function": "Instruction_SetBatch",
+      "Args": ["DeviceHash", "LogicType", "Number|Register|Constant|Hash"]
+    },
+    "sbn": {
+      "Alias": { "sbn": 4 },
+      "Function": "Instruction_SetBatchNamed",
+      "Args": [
+        "DeviceHash",
+        "NameHash",
+        "LogicType",
+        "Number|Register|Constant|Hash"
+      ]
+    },
+    "hcf": {
+      "Alias": { "hcf": 0 },
+      "Function": "Instruction_Hcf",
+      "Args": []
+    },
+    "j": {
+      "Alias": { "j": 1 },
+      "Function": "Instruction_Jump",
+      "Args": ["Number|Register|Constant|Hash"]
+    },
+    "jal": {
+      "Alias": { "jal": 1 },
+      "Function": "Instruction_JumpAL",
+      "Args": ["Number|Register|Constant|Hash"]
+    },
+    "jr": {
+      "Alias": { "jr": 1 },
+      "Function": "Instruction_JumpR",
+      "Args": ["Number|Register|Constant|Hash"]
+    },
+    "b": {
+      "Alias": {
+        "bap": 4,
+        "brap": 4,
+        "bapal": 4,
+        "bapz": 3,
+        "brapz": 3,
+        "bapzal": 3,
+        "beq": 3,
+        "breq": 3,
+        "beqal": 3,
+        "beqz": 2,
+        "breqz": 2,
+        "beqzal": 2,
+        "bge": 3,
+        "brge": 3,
+        "bgeal": 3,
+        "bgez": 2,
+        "brgez": 2,
+        "bgezal": 2,
+        "bgt": 3,
+        "brgt": 3,
+        "bgtal": 3,
+        "bgtz": 2,
+        "brgtz": 2,
+        "bgtzal": 2,
+        "ble": 3,
+        "brle": 3,
+        "bleal": 3,
+        "blez": 2,
+        "brlez": 2,
+        "blezal": 2,
+        "blt": 3,
+        "brlt": 3,
+        "bltal": 3,
+        "bltz": 2,
+        "brltz": 2,
+        "bltzal": 2,
+        "bna": 4,
+        "brna": 4,
+        "bnaal": 4,
+        "bnan": 2,
+        "brnan": 2,
+        "bnaz": 3,
+        "brnaz": 3,
+        "bnazal": 3,
+        "bne": 3,
+        "brne": 3,
+        "bneal": 3,
+        "bnez": 2,
+        "brnez": 2,
+        "bnezal": 2
+      },
+      "Function": "Instruction_Branch",
+      "Args": [
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash"
+      ]
+    },
+    "bd": {
+      "Alias": {
+        "bdns": 2,
+        "bdnsal": 2,
+        "bdse": 2,
+        "bdseal": 2,
+        "brdns": 2,
+        "brdse": 2
+      },
+      "Function": "Instruction_Branch_Devices",
+      "Args": ["Device", "Number|Register|Constant|Hash"]
+    },
+    "sr": {
+      "Alias": {
+        "sap": 4,
+        "sapz": 3,
+        "seq": 3,
+        "seqz": 2,
+        "sge": 3,
+        "sgez": 2,
+        "sgt": 3,
+        "sgtz": 2,
+        "sle": 3,
+        "slez": 2,
+        "slt": 3,
+        "sltz": 2,
+        "sna": 4,
+        "snan": 2,
+        "snanz": 2,
+        "snaz": 3,
+        "sne": 3,
+        "snez": 2
+      },
+      "Function": "Instruction_Set_Conditional_Register",
+      "Args": [
+        "Register",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash"
+      ]
+    },
+    "srd": {
+      "Alias": {
+        "sdns": 2,
+        "sdse": 2
+      },
+      "Function": "Instruction_Set_Conditional_Register_Devices",
+      "Args": ["Register", "Device"]
+    },
+    "select": {
+      "Alias": {
+        "select": 4
+      },
+      "Function": "Instruction_Select",
+      "Args": [
+        "Register",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash"
+      ]
+    },
+    "and": {
+      "Alias": {
+        "and": 3
+      },
+      "Function": "Instruction_Bitwise_And",
+      "Args": [
+        "Register",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash"
+      ]
+    },
+    "nor": {
+      "Alias": {
+        "nor": 3
+      },
+      "Function": "Instruction_Bitwise_Nor",
+      "Args": [
+        "Register",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash"
+      ]
+    },
+    "not": {
+      "Alias": {
+        "not": 2
+      },
+      "Function": "Instruction_Bitwise_Not",
+      "Args": ["Register", "Number|Register|Constant|Hash"]
+    },
+    "or": {
+      "Alias": {
+        "or": 3
+      },
+      "Function": "Instruction_Bitwise_Or",
+      "Args": [
+        "Register",
+        "Number|Register|Constant|Hash",
+        "Number|Register|Constant|Hash"
+      ]
+    }
+  }
+}

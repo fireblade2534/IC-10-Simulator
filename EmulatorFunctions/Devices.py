@@ -56,7 +56,7 @@ class Device:
         Log.Info("\n".join(Output)+"\n+--------------+-------+")
 
 class DeviceMaker:
-    def __init__(self,DeviceFile:str="EmulatorFunctions/Devices.json"):
+    def __init__(self,DeviceFile:str="Configs/Devices.json"):
         self.Devices=json.loads(open(DeviceFile,"r").read())
     
     def MakeDevice(self,DeviceType:str,ReferenceId:int,DeviceName:str="",**kwargs):

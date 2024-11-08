@@ -11,7 +11,7 @@ import re
 epsilon=pow(2,-23)
 
 class CodeRunner:
-    def __init__(self,Parent,FilePath="Functions.json",DeviceFile:str="EmulatorFunctions/Devices.json"):
+    def __init__(self,Parent,FilePath="Configs/Functions.json",DeviceFile:str="Configs/Devices.json"):
         self.DevicesList=json.loads(open(DeviceFile,"r").read())
 
         self.FunctionMap=json.load(open(FilePath,"r"))
