@@ -51,4 +51,6 @@ TODO:
  - Branch instructions relating to other devices <-- WORK ON
  - Aliases for devices
  - Select Command
+ - Add bit shifting
+ - Slot loading
  

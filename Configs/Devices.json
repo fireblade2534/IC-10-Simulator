@@ -12,9 +12,9 @@
     "Pins": {
       "Number": 6
     },
-    "Slots": {
-      "Number": 1
-    },
+    "Slots": [
+      {"Type":"Chip"}
+    ],
     "Properties": {
       "RunCode": true,
       "Stack": {
@@ -39,9 +39,9 @@
     "Pins": {
       "Number": 0
     },
-    "Slots": {
-      "Number": 0
-    },
+    "Slots": [
+
+    ],
     "Properties": {
       "RunCode": false,
       "Stack": {
@@ -71,9 +71,9 @@
     "Pins": {
       "Number": 0
     },
-    "Slots": {
-      "Number": 0
-    },
+    "Slots": [
+      
+    ],
     "Properties": {
       "RunCode": false,
       "Stack": {
@@ -84,5 +84,5 @@
     "Variables": {
       "Code": "NONE"
     }
-  }
+  } ADD SORTER AND ADD SLOTS
 }
