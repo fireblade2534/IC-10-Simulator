@@ -13,8 +13,9 @@
       "Number": 6
     },
     "Slots": [
-      {"Type":"Chip"}
+      {"Type":"Type_ProgrammableChip","Name":"IC10 slot"}
     ],
+    "SlotType":"Type_None",
     "Properties": {
       "RunCode": true,
       "Stack": {
@@ -74,6 +75,7 @@
     "Slots": [
       
     ],
+    "SlotType":"Type_None", 
     "Properties": {
       "RunCode": false,
       "Stack": {
@@ -84,5 +86,38 @@
     "Variables": {
       "Code": "NONE"
     }
-  } ADD SORTER AND ADD SLOTS
+  },
+  "StructureLogicSorter":{
+    "Fields": {
+      "Power": { "Value": 1, "Read": true, "Write": false },
+      "Mode": { "Value": 0, "Read": true, "Write": true },
+      "Error": { "Value": 0, "Read": true, "Write": false },
+      "On": { "Value": 0, "Read": true, "Write": true },
+      "RequiredPower": { "Value": 0, "Read": true, "Write": false },
+      "ClearMemory": { "Value": 0, "Read": false, "Write": true },
+      "ExportCount": { "Value": 0, "Read": true, "Write": false },
+      "ImportCount": { "Value": 0, "Read": true, "Write": false }
+    },
+    "Pins": {
+      "Number": 0
+    },
+    "Slots": [
+      {"Type":"Type_Any","Name":"Import"},
+      {"Type":"Type_Any","Name":"Export (Reject)"},
+      {"Type":"Type_Any","Name":"Export (Accept)"},
+      {"Type":"Type_DataDisk","Name":"Datadisk"}
+    ],
+    "SlotType":"Type_None",
+    "Properties": {
+      "RunCode": false,
+      "Stack": {
+        "Enabled": true,
+        "Length": 512
+      }
+    },
+    "Variables": {
+      "Code": "NONE"
+    }
+  }
+  
 }

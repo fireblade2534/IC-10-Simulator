@@ -53,4 +53,5 @@ TODO:
  - Select Command
  - Add bit shifting
  - Slot loading
+ - Check all slot types in game
  
