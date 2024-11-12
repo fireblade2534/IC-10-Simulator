@@ -54,4 +54,4 @@ TODO:
  - Add bit shifting
  - Slot loading
  - Check all slot types in game
- 
+ - Reading slot values
