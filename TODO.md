@@ -55,3 +55,5 @@ TODO:
  - Slot loading
  - Check all slot types in game
  - Reading slot values
+ - Network Channels
+ - Full slot support

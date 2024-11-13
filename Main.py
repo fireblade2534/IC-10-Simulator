@@ -6,7 +6,7 @@ import UtilityFunctions.Logging as Logging
 from UtilityFunctions.Utility import *
 import math
 
-Log=Logging.Logging(LogToFile=False)
+
 class MainManager:
     def __init__(self,Networks:list[Network.Network]=[]):
         self.Networks=Networks
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     DM=Devices.DeviceMaker()
     MNet.AddDevice(DM.MakeDevice("StructureCircuitHousing",69,Code=open("Test.ic10","r").read(),Pins={"d0":65}))
     MNet.AddDevice(DM.MakeDevice("StructureGasMixer",65,Setting=50,DeviceName="bob"))
-    MNet.AddDevice(DM.MakeDevice("StructureGasMixer",64,DeviceName="bob"))
+    MNet.AddDevice(DM.MakeDevice("StructureGasMixer",64,DeviceName="bosb"))
     MM=MainManager([MNet])
     MM.Networks[0].DeviceList[69].State.PrintConstants()
     for X in range(0,6):

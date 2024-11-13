@@ -4,10 +4,9 @@ import json
 import EmulatorFunctions.Devices as Devices
 import EmulatorFunctions.Network as Network
 from UtilityFunctions.Error import *
-import UtilityFunctions.Logging as Logging
 from UtilityFunctions.Utility import *
 import Main
-from Main import Log
+from __init__ import Log
 from Main import MainManager
 
 class TestState:

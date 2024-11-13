@@ -1,6 +1,6 @@
 from UtilityFunctions.Error import *
 from UtilityFunctions.Utility import *
-from Main import Log
+from __init__ import Log
 
 import json
 import copy
@@ -37,12 +37,12 @@ class CodeRunner:
         self.HighestSP=0
 
     def ParseCode(self):
-        self.LogicTypesList=set()
+        self.LogicTypesList=set(["ReferenceId","PrefabHash"])
         for X,Y in self.DevicesList.items():
             for A,B in Y["Fields"].items():
                 if B["Read"] or B["Write"]:
                     self.LogicTypesList.add(A)
-
+        
         for X,Y in enumerate(self.Code):
             if "#" in Y:
                 Location=Y.find("#")
@@ -121,6 +121,12 @@ class CodeRunner:
     def Special_NameHash(self,Value,BaseType):
         return True
     def Special_Get_NameHash(self,Value):
+        return Value
+
+    def Special_ReferenceID(self,Value,BaseType):
+        return True
+    
+    def Special_Get_ReferenceID(self,Value):
         return Value
 
     def GetArgBaseType(self,Value,TargetTypes=[]):
@@ -827,6 +833,40 @@ class CodeRunner:
         Devices=self.Parent.Network.GetBatchDevices(Value1,Value2)
         for X in Devices:
             X.SetFieldValue(Value3,Value4)
+
+    def Instruction_SetDevice(self,*args):
+        Index1=self.GetSpecialArgValue(args[1],"ReferenceID")
+        Value1=self.GetSpecialArgValue(args[2],"LogicType")
+        Value2=self.GetArgValue(args[3])
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        DeviceObject=self.GetDeviceObject(Index1)
+        
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        Result=DeviceObject.SetFieldValue(Value1,Value2)   
+        if Result[0] == None:
+            Log.Warning(Result[1],Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+
+    def Instruction_LoadDevice(self,*args):
+        Index1=self.GetArgIndex(args[1])
+        Index2=self.GetSpecialArgValue(args[2],"ReferenceID")
+        Value1=self.GetSpecialArgValue(args[3],"LogicType")
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        DeviceObject=self.GetDeviceObject(self.Parent.Pins[Index2])
+
+        
+        if self.Parent.Fields["Error"].Value == 1:return
+
+        FieldValue=DeviceObject.GetFieldValue(Value1)
+        if FieldValue[0] == None:
+            Log.Warning(FieldValue[1],Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return None
+        #print(Index1,Index2)
+        self.Registers[Index1]=FieldValue[0]
 
     def Instruction_Yield(self,*args):
         return

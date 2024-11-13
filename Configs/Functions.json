@@ -19,6 +19,11 @@
       "Types": "Number|Constant|Register|Hash",
       "ConfirmFunction": "Special_NameHash",
       "GetArgFunction": "Special_Get_NameHash"
+    },
+    "ReferenceID": {
+      "Types": "Number|Constant|Register|Hash",
+      "ConfirmFunction": "Special_ReferenceID",
+      "GetArgFunction": "Special_Get_ReferenceID"
     }
   },
   "Functions": {
@@ -225,6 +230,24 @@
         "NameHash",
         "LogicType",
         "Number|Register|Constant|Hash"
+      ]
+    },
+    "sd": {
+      "Alias": { "sd": 3 },
+      "Function": "Instruction_SetDevice",
+      "Args": [
+        "ReferenceID",
+        "LogicType",
+        "Number|Register|Constant|Hash"
+      ]
+    },
+    "ld": {
+      "Alias": { "ld": 3 },
+      "Function": "Instruction_LoadDevice",
+      "Args": [
+        "Register",
+        "ReferenceID",
+        "LogicType"
       ]
     },
     "hcf": {

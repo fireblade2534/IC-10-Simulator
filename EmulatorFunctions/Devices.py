@@ -1,7 +1,7 @@
 from re import L
 from UtilityFunctions.Error import *
 from UtilityFunctions.Utility import *
-from Main import Log
+from __init__ import Log
 
 from EmulatorFunctions.CodeRunner import *
 
