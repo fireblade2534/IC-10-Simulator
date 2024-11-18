@@ -9,6 +9,7 @@
       "RequiredPower": { "Value": 0, "Read": true, "Write": false },
       "Setting": { "Value": 0, "Read": true, "Write": true }
     },
+    "ConnectionsNumber":2,
     "Pins": {
       "Number": 6
     },
@@ -37,6 +38,7 @@
       "Maximum": { "Value": 100, "Read": true, "Write": false },
       "Setting": { "Value": 0, "Read": true, "Write": true }
     },
+    "ConnectionsNumber":1,
     "Pins": {
       "Number": 0
     },
@@ -69,6 +71,7 @@
       "On": { "Value": 0, "Read": true, "Write": true },
       "RequiredPower": { "Value": 0, "Read": true, "Write": false }
     },
+    "ConnectionsNumber":1,
     "Pins": {
       "Number": 0
     },
@@ -98,6 +101,7 @@
       "ExportCount": { "Value": 0, "Read": true, "Write": false },
       "ImportCount": { "Value": 0, "Read": true, "Write": false }
     },
+    "ConnectionsNumber":2,
     "Pins": {
       "Number": 0
     },
