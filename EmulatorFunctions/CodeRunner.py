@@ -37,7 +37,7 @@ class CodeRunner:
         self.HighestSP=0
 
     def ParseCode(self):
-        self.LogicTypesList=set(["ReferenceId","PrefabHash"])
+        self.LogicTypesList=set(["ReferenceId","PrefabHash"] + [f"Channel{X}" for X in range(8)])
         for X,Y in self.DevicesList.items():
             for A,B in Y["Fields"].items():
                 if B["Read"] or B["Write"]:
