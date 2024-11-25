@@ -47,6 +47,6 @@
     },
     "Alias": { "sp": "r16", "ra": "r17"},
     "PinAlias":{"Thing":"d0", "SelfStuff": "db"},
-    "Constant": {}
+    "Constant": {  "nan":"NaN", "ninf":"ninf"}
   }
 }

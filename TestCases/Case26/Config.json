@@ -38,6 +38,6 @@
     },
     "Alias": { "sp": "r16", "ra": "r17"},
     "PinAlias":{},
-    "Constant": {}
+    "Constant": {  "nan":"NaN", "ninf":"ninf"}
   }
 }

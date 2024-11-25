@@ -33,7 +33,7 @@ class CodeRunner:
 
         if self.Parent.StackEnabled == True:
             self.Stack=[0 for X in range(self.Parent.StackLength)]
-        self.Constants={}       
+        self.Constants=copy.copy(Constants.DEFAULT_CONSTANTS)
 
         self.ParseCode()
 
