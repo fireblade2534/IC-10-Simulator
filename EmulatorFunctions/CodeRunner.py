@@ -1,5 +1,8 @@
+from asyncio import constants
+from multiprocessing import Value
 from UtilityFunctions.Error import *
 from UtilityFunctions.Utility import *
+import Configs.Constants as Constants
 from __init__ import Log
 
 import json
@@ -24,7 +27,7 @@ class CodeRunner:
         self.Parent=Parent
         self.Code=self.Parent.Code.split("\n")
         self.Registers={f"r{X}":0 for X in range(0,18)}
-        self.RegisterAliases={"sp":"r16","ra":"r17"}
+        self.RegisterAliases=copy.copy(Constants.DEFAULT_REGISTER_ALIAS)
 
         self.PinAliases={}
 
@@ -95,20 +98,18 @@ class CodeRunner:
         return Value
 
     def Special_BatchMode(self,Value,BaseType):
-        BatchList=["Average","Sum","Minimum","Maximum"]
         if BaseType == "String":
-            return Value in BatchList
+            return Value in list(Constants.BATCH_TYPES_VALUES.keys())
         return True
     def Special_Get_BatchMode(self,Value):
-        BatchList={"Average":0,"Sum":1,"Minimum":2,"Maximum":3}
         if type(Value) == str:
-            if str(Value) in BatchList:
-                return BatchList[Value]
+            if str(Value) in Constants.BATCH_TYPES_VALUES:
+                return Constants.BATCH_TYPES_VALUES[Value]
         RawValue= self.GetArgValue(Value)
-        if RawValue >= 0 and RawValue < 4:
+        if RawValue >= 0 and RawValue < len(Constants.BATCH_TYPES_VALUES):
             return RawValue
         else:
-            Log.Warning("Batch mode value must bettween greater then or euqal too 0 and less then 4",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value} ")
+            Log.Warning(f"Batch mode value must bettween greater then or euqal too 0 and less then {len(Constants.BATCH_TYPES_VALUES)}",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value} ")
             self.Parent.Fields["Error"].Value=1
             return None
 
@@ -228,7 +229,7 @@ class CodeRunner:
                     TempValue=Value[1:]
                     RegisterIndex=int(TempValue.replace("r",""))
                     for X in range(TempValue.count("r")):
-                        if RegisterIndex != "NaN":
+                        if RegisterIndex not in Constants.NOT_NUMBER_NUMBERS:
                             if RegisterIndex >= 0 and RegisterIndex < 18:
                                 RegisterIndex=self.Registers[f"r{RegisterIndex}"]
                             else:
@@ -255,7 +256,7 @@ class CodeRunner:
             try:
                 RegisterIndex=int(Value.replace("r",""))
                 for X in range(Value.count("r") - 1):
-                    if RegisterIndex != "NaN":
+                    if RegisterIndex not in Constants.NOT_NUMBER_NUMBERS:
                         if RegisterIndex >= 0 and RegisterIndex < 18:
                             RegisterIndex=self.Registers[f"r{RegisterIndex}"]
                         else:
@@ -275,14 +276,14 @@ class CodeRunner:
 
     def GetArgValue(self,Value,TargetType=[]):
         #Account for indirect aliasing (remember that it can be done multiple times eg rrr1)
-
+        Value=str(Value)
         if Value in self.Constants:
             return self.Constants[Value]
         if Value[0] == "r":
             try:
                 RegisterIndex=int(Value.replace("r",""))
                 for X in range(Value.count("r") - 1):
-                    if RegisterIndex != "NaN":
+                    if RegisterIndex not in Constants.NOT_NUMBER_NUMBERS:
                         if RegisterIndex >= 0 and RegisterIndex < 18:
                             RegisterIndex=self.Registers[f"r{RegisterIndex}"]
                         else:
@@ -391,9 +392,13 @@ class CodeRunner:
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN" or Value2 == "NaN":
-            self.Registers[Index1]="NaN"
-            return 
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
+            return
+
+        if Value2 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value2
+            return
 
         self.Registers[Index1]=Value1 + Value2
 
@@ -403,8 +408,12 @@ class CodeRunner:
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN" or Value2 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
+            return
+
+        if Value2 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value2
             return
 
         self.Registers[Index1]=Value1 - Value2
@@ -415,8 +424,12 @@ class CodeRunner:
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN" or Value2 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
+            return
+
+        if Value2 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value2
             return
 
         self.Registers[Index1]=Value1 * Value2
@@ -427,7 +440,15 @@ class CodeRunner:
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN" or Value2 == "NaN":
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
+            return
+
+        if Value2 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value2
+            return
+
+        if Value2 == 0:
             self.Registers[Index1]="NaN"
             return
 
@@ -438,8 +459,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
 
         self.Registers[Index1]=abs(Value1)
@@ -449,8 +470,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
 
         self.Registers[Index1]=math.ceil(Value1)
@@ -460,8 +481,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
 
         self.Registers[Index1]=math.floor(Value1)
@@ -471,8 +492,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
 
         self.Registers[Index1]=math.e ** Value1
@@ -482,8 +503,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
 
         self.Registers[Index1]=math.log(Value1)
@@ -499,8 +520,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         Decimal=Value1 - math.floor(Value1)
         if Decimal >= 0.5:
@@ -513,8 +534,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         self.Registers[Index1]=math.sqrt(Value1)
 
@@ -523,8 +544,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         self.Registers[Index1]=math.trunc(Value1)
 
@@ -533,8 +554,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         try:
             self.Registers[Index1]=math.asin(Value1)
@@ -546,8 +567,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         try:
             self.Registers[Index1]=math.acos(Value1)
@@ -559,8 +580,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         try:
             self.Registers[Index1]=math.atan(Value1)
@@ -573,8 +594,12 @@ class CodeRunner:
         Value2=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
+            return
+
+        if Value2 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value2
             return
         try:
             self.Registers[Index1]=math.atan2(Value1,Value2)
@@ -586,8 +611,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         try:
             self.Registers[Index1]=math.sin(Value1)
@@ -599,8 +624,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         try:
             self.Registers[Index1]=math.cos(Value1)
@@ -612,8 +637,8 @@ class CodeRunner:
         Value1=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
-            self.Registers[Index1]="NaN"
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]=Value1
             return
         try:
             self.Registers[Index1]=math.tan(Value1)
@@ -625,7 +650,7 @@ class CodeRunner:
         Index2=self.GetArgIndex(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Index1 == "NaN":
+        if Index1 in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("Cannot peek at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
@@ -641,7 +666,7 @@ class CodeRunner:
         Value1=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Index1 == "NaN":
+        if Index1 in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("Cannot push at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
@@ -658,7 +683,7 @@ class CodeRunner:
         Index2=self.GetArgIndex(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Index1 == "NaN":
+        if Index1 in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("Cannot pop at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
@@ -688,7 +713,7 @@ class CodeRunner:
             self.Parent.Fields["Error"].Value=1
             return
 
-        if Index3 == "NaN":
+        if Index3 in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("Cannot get at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
@@ -702,14 +727,14 @@ class CodeRunner:
 
     def Instruction_GetD(self,*args):
         pass
-        #TODO
+        #TODO STACK ON OTHER DEVICES
 
     def Instruction_Poke(self,*args):
         Value1=self.GetArgValue(args[1])
         Value2=self.GetArgValue(args[2])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Value1 == "NaN":
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("Cannot poke at NaN index",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
@@ -744,7 +769,18 @@ class CodeRunner:
         #print(Index1,Index2)
         self.Registers[Index1]=FieldValue[0]
 
-    def ApplyBatchOperation(self,Values,BatchMode:int):
+    def ApplyBatchOperation(self,Values,BatchMode):
+        try:
+            BatchMode=int(BatchMode)
+            if BatchMode < 0 or BatchMode >= len(Constants.BATCH_NO_RESPONSE):
+                return 0
+
+        except:
+            return 0
+        
+        if len(Values) == 0:
+            return Constants.BATCH_NO_RESPONSE[BatchMode]
+
         if BatchMode == 0:
             return sum(Values) / len(Values)
         elif BatchMode == 1:
@@ -753,10 +789,11 @@ class CodeRunner:
             return min(Values)
         elif BatchMode == 3:
             return max(Values)
+        
+        
         return "NaN"
 
     def CollectDevicesValueBatch(self,Devices,Value,BatchMode):
-        NoDevicesResponse=["NaN",0,0,float('-inf')]
         
         Values=[]
         for X in Devices:
@@ -765,7 +802,7 @@ class CodeRunner:
                 Values.append(FieldValue[0])
 
         if len(Values) == 0:
-            return NoDevicesResponse[BatchMode]
+            return Constants.BATCH_NO_RESPONSE[BatchMode]
         return MakeIntIfClose(self.ApplyBatchOperation(Values,BatchMode))
 
     def Instruction_LoadBatch(self,*args):
@@ -774,6 +811,10 @@ class CodeRunner:
         Value2=self.GetSpecialArgValue(args[3],"LogicType")
         Value3=self.GetSpecialArgValue(args[4],"BatchMode")
         if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]="Nan"
+            return
 
         Devices=self.Parent.Network.GetBatchDevices(Value1)
         Result=self.CollectDevicesValueBatch(Devices,Value2,Value3)
@@ -787,6 +828,16 @@ class CodeRunner:
         Value3=self.GetSpecialArgValue(args[4],"LogicType")
         Value4=self.GetSpecialArgValue(args[5],"BatchMode")
         if self.Parent.Fields["Error"].Value == 1:return
+
+        if Value1 in Constants.NOT_NUMBER_NUMBERS:
+            self.Registers[Index1]="NaN"
+            return
+
+        if Value2 in Constants.NOT_NUMBER_NUMBERS:
+            Log.Warning(f"Cannot get a device with a NameHash of NaN",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
+            self.Parent.Fields["Error"].Value=1
+            return
+
 
         Devices=self.Parent.Network.GetBatchDevices(Value1,Value2)
         Result=self.CollectDevicesValueBatch(Devices,Value3,Value4)
@@ -817,6 +868,7 @@ class CodeRunner:
         Value2=self.GetSpecialArgValue(args[2],"LogicType")
         Value3=self.GetArgValue(args[3])
         if self.Parent.Fields["Error"].Value == 1:return
+
 
         Devices=self.Parent.Network.GetBatchDevices(Value1)
         for X in Devices:
@@ -880,7 +932,7 @@ class CodeRunner:
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Line == "NaN":
+        if Line in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
@@ -891,7 +943,7 @@ class CodeRunner:
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
 
-        if Line == "NaN":
+        if Line in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("You cannot jump to a NaN line",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return
@@ -903,7 +955,7 @@ class CodeRunner:
         Line=self.GetArgValue(args[1])
         if self.Parent.Fields["Error"].Value == 1:return
         
-        if Line == "NaN":
+        if Line in Constants.NOT_NUMBER_NUMBERS:
             Log.Warning("You cannot jump relative to a NaN line",Caller=f"Script line {self.Parent.Fields['LineNumber'].Value}")
             self.Parent.Fields["Error"].Value=1
             return

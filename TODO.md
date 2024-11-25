@@ -22,7 +22,7 @@ jr -5
 move r1 35
 ```
 
- - Find out what happens when you put NaN into all combos of arguments in the branch instructions
+ - Find out what happens when you put NaN or ninf into all combos of arguments in the branch instructions
  
  - Find out if it errors when you do a float in an inderect reference:
 ```
@@ -56,4 +56,4 @@ TODO:
  - Check all slot types in game
  - Reading slot values
  - Network Channels
- - Full slot support
+ - Full slot support <-- DO THIS AS WELL

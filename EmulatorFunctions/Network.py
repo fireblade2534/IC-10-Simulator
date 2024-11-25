@@ -6,7 +6,7 @@ class Network:
         self.DeviceList={}
         for X in DeviceList:
             self.DeviceList[X.ReferenceId]=X
-        self.NetworkChannels=["NaN" for X in range(0,6)]
+        self.NetworkChannels={(f"Channel{X}","NaN") for X in range(0,6)}
     
     def AddDevice(self,Device):
         if Device.ReferenceId not in self.DeviceList:

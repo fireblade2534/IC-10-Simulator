@@ -1,4 +1,10 @@
 lbn r0 HASH("StructureGasMixer") HASH("bob") Setting Average
 sb HASH("StructureGasMixer") Setting 30
+lbn r3 HASH("StructureGasMixer") HASH("bob") Setting 3
+move r5 2
+lbn r7 HASH("StructureGasMixer") HASH("bob") Setting 3
+move r7 10
+lbn r4 HASH("StructureGasMixer") HASH("bob") Setting r5
+lbn r6 HASH("StructureGasMixer") HASH("bb") Setting 3
 sbn HASH("StructureGasMixer") HASH("bobthegreat") Setting 80
 lb r2 HASH("StructureGasMixer") Setting Sum

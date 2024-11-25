@@ -1,0 +1,53 @@
+{
+  "Name": "NaN Test 1",
+  "LoopLines": 6,
+  "RunDevice": 69,
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{} },
+  {"Type":"StructureGasMixer", "DeviceName":"bob", "ReferenceId": 56,"Setting":0} ],
+  "Expected": {
+    "Fields": {
+      "69":{
+        "Activate": 0,
+        "Error": 0,
+        "LineNumber": 6,
+        "On": 1,
+        "Power": 1,
+        "RequiredPower": 0,
+        "Setting": 0
+      },
+      "56":{
+        "Error": 0,
+        "On": 0,
+        "Ratio": 0,
+        "Power": 1,
+        "RequiredPower": 100,
+        "Maximum": 100,
+        "Setting": 0
+      }
+    },
+    "Stack": {},
+    "Registery": {
+      "r0": "NaN",
+      "r1": "NaN",
+      "r2": "NaN",
+      "r3": "NaN",
+      "r4": "NaN",
+      "r5": "NaN",
+      "r6": 0,
+      "r7": 0,
+      "r8": 0,
+      "r9": 0,
+      "r10": 0,
+      "r11": 0,
+      "r12": 0,
+      "r13": 0,
+      "r14": 0,
+      "r15": 0,
+      "r16": 0,
+      "r17": 0
+    },
+    "Alias": { "sp": "r16", "ra": "r17"},
+    "PinAlias":{},
+    "Constant": {}
+  }
+}
