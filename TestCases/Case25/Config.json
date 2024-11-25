@@ -2,7 +2,7 @@
   "Name": "Branch Test 5",
   "LoopLines": 6,
   "RunDevice": 69,
-  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{"d0":56} },{"Type":"StructureGasMixer", "ReferenceId": 56,"Setting":0} ],
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{"d0":56} ,"On": 1},{"Type":"StructureGasMixer", "ReferenceId": 56,"Setting":0,"RequiredPower": 100,"Maximum": 100} ],
   "Expected": {
     "Fields": {
       "69":{
@@ -19,6 +19,7 @@
         "On": 0,
         "Ratio": 0,
         "Power": 1,
+        "Lock":0,
         "RequiredPower": 100,
         "Maximum": 100,
         "Setting": 0

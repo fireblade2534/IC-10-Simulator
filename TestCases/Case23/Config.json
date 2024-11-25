@@ -3,10 +3,10 @@
   "LoopLines": 10,
   "RunDevice": 69,
   "Devices": [
-    { "Type": "StructureCircuitHousing", "ReferenceId": 69, "Pins": {} },
-    { "Type": "StructureGasMixer", "ReferenceId": 56, "Setting":50, "DeviceName": "bob" },
-    { "Type": "StructureGasMixer", "ReferenceId": 89, "DeviceName": "bob" },
-    { "Type": "StructureGasMixer", "ReferenceId": 72, "DeviceName": "bobthegreat" }
+    { "Type": "StructureCircuitHousing", "ReferenceId": 69, "Pins": {} ,"On": 1},
+    { "Type": "StructureGasMixer", "ReferenceId": 56, "Setting":50, "DeviceName": "bob","Maximum": 100,"RequiredPower": 100},
+    { "Type": "StructureGasMixer", "ReferenceId": 89, "DeviceName": "bob" ,"Maximum": 100,"RequiredPower": 100},
+    { "Type": "StructureGasMixer", "ReferenceId": 72, "DeviceName": "bobthegreat" ,"Maximum": 100,"RequiredPower": 100}
   ],
   "Expected": {
     "Fields": {
@@ -24,6 +24,7 @@
         "On": 0,
         "Ratio": 0,
         "Power": 1,
+        "Lock":0,
         "RequiredPower": 100,
         "Maximum": 100,
         "Setting": 30
@@ -33,6 +34,7 @@
         "On": 0,
         "Ratio": 0,
         "Power": 1,
+        "Lock":0,
         "RequiredPower": 100,
         "Maximum": 100,
         "Setting": 30
@@ -42,6 +44,7 @@
         "On": 0,
         "Ratio": 0,
         "Power": 1,
+        "Lock":0,
         "RequiredPower": 100,
         "Maximum": 100,
         "Setting": 80

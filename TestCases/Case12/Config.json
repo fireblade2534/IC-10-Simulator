@@ -2,7 +2,7 @@
   "Name": "Branch Test 3",
   "LoopLines":7,
   "RunDevice": 69,
-  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69 } ],
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69 ,"On": 1} ],
   "Expected": {
     "Stack": {},
     "Fields": {"69":{

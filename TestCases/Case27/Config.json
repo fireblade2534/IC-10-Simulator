@@ -2,8 +2,8 @@
   "Name": "Direct Reference Test 1",
   "LoopLines": 3,
   "RunDevice": 69,
-  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{} },
-  {"Type":"StructureGasMixer", "DeviceName":"bob", "ReferenceId": 56,"Setting":0} ],
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{},"On": 1 },
+  {"Type":"StructureGasMixer", "DeviceName":"bob", "ReferenceId": 56,"Setting":0,"RequiredPower": 100,"Maximum": 100} ],
   "Expected": {
     "Fields": {
       "69":{
@@ -20,6 +20,7 @@
         "On": 0,
         "Ratio": 0,
         "Power": 1,
+        "Lock":0,
         "RequiredPower": 100,
         "Maximum": 100,
         "Setting": 1

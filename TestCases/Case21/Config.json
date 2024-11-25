@@ -2,7 +2,7 @@
   "Name": "Indirect Reference Test 2",
   "LoopLines": 5,
   "RunDevice": 69,
-  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69 } ],
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69 ,"On": 1} ],
   "Expected": {
     "Fields": {"69":{
       "Activate": 0,

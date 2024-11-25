@@ -2,14 +2,14 @@
   "Name": "Branch Test 2",
   "LoopLines":10,
   "RunDevice": 69,
-  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69 } ],
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69 ,"On": 1} ],
   "Expected": {
     "Stack": {},
     "Fields": {"69":{
       "Activate": 0,
       "Error": 0,
       "LineNumber": 4,
-      "On": 1,
+      "On":1,
       "Power": 1,
         "RequiredPower": 0,
         "Setting": 0

@@ -2,7 +2,7 @@
   "Name": "Device Port Test 2",
   "LoopLines": 8,
   "RunDevice": 69,
-  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{"d0":56} },{"Type":"StructureGasMixer", "ReferenceId": 56,"Setting":55} ],
+  "Devices": [ {"Type":"StructureCircuitHousing", "ReferenceId": 69, "Pins":{"d0":56} ,"On": 1},{"Type":"StructureGasMixer", "ReferenceId": 56,"Setting":55,"Maximum": 100} ],
   "Expected": {
     "Fields": {
       "69":{
@@ -19,7 +19,8 @@
         "On": 0,
         "Ratio": 0,
         "Power": 1,
-        "RequiredPower": 100,
+        "Lock":0,
+        "RequiredPower": 0,
         "Maximum": 100,
         "Setting": 92
       }
